@@ -26,26 +26,6 @@
     --bg-size: 25px 25px;
 }
 
-[data-theme="tingyu"] {
-    --bg-purple: #eff4f5;      
-    --dot-color: #d4e0e4;      
-    --main-purple: #7a9da8;    
-    --dark-purple: #3f5863;    
-    --main-pink: #b2c9d1;      
-    --white: #f9fbfc;
-    --macaron-blue: #d2e1e6;
-    --macaron-yellow: #e4ecef;
-    --macaron-green: #c4d9e0;
-    --macaron-gray: #d4e0e4;
-    
-    --tape-bg: rgba(178, 201, 209, 0.7);
-    --tape-border: rgba(122, 157, 168, 0.4);
-    --danger-color: #79949c;
-    --line-color: #d4e0e4;
-    --tag-bg: #e4ecef;
-    --overlay-bg: rgba(239, 244, 245, 0.85);
-}
-
 [data-theme="baiyu"] {
     --bg-purple: #fcfcfc;      
     --dot-color: #e0e0e0;      
@@ -1156,4 +1136,484 @@ h1 {
     background-image: repeating-linear-gradient(-35deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 5px, transparent 5px, transparent 12px) !important;
     border: 1.8px solid #4a5942 !important;
     box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35), 0 4px 10px rgba(56, 53, 48, 0.15) !important;
+}
+
+/* ==================================================================== */
+/* ❖ 主题 3：檐下听雨 (原色系完整保留 / 板块形态各异 / 雨滴加号 / 全雨景细节) */
+/* ==================================================================== */
+
+[data-theme="tingyu"] {
+    /* 严格保留你最喜欢的这套烟雨青灰配色，绝不改动 */
+    --bg-purple: #e9eff2;      /* 浅灰蓝雨天底色 */
+    --dot-color: transparent;
+    --main-purple: #9cb0bc;    /* 细浅色卡片边框 (烟雨青灰) */
+    --dark-purple: #364954;    /* 深黛蓝文字色 */
+    --white: #f7fafb;          /* 卡片干净的冷调云白 */
+
+    --macaron-blue: #d3e1e8;   /* 远山青蓝 (链接) */
+    --macaron-yellow: #dce3e6; /* 晨雾浅灰 (密钥) */
+    --macaron-green: #cfe0dd;  /* 苔痕冷青 (邀人) */
+    --macaron-gray: #e3eaed;   /* 禁用浅灰 */
+
+    --main-pink: transparent;  /* 去除厚重硬阴影 */
+    --danger-color: #9bb0bd;   /* 克制的冷灰蓝删除键 */
+    --line-color: #dbe4e8;
+    --tag-bg: #dfeaef;
+    --overlay-bg: rgba(233, 239, 242, 0.88);
+
+    --border-width: 1px;
+    --shadow-size: 0px;
+}
+
+/* -------------------------------------------------------------------- */
+/* 1. 全局背景：疏密有致的斜风细雨 + 水面微澜圈 (纯矢量，清透安静) */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] body {
+    background-color: #e9eff2 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%237892a1' stroke-width='0.85' stroke-opacity='0.2' stroke-linecap='round' fill='none'%3E%3Cline x1='45' y1='15' x2='33' y2='48'/%3E%3Cline x1='155' y1='35' x2='146' y2='60'/%3E%3Cline x1='95' y1='105' x2='82' y2='142'/%3E%3Cline x1='190' y1='130' x2='182' y2='152'/%3E%3Cline x1='30' y1='145' x2='22' y2='168'/%3E%3Cellipse cx='78' cy='150' rx='9' ry='2.5' stroke-opacity='0.14'/%3E%3Cellipse cx='142' cy='68' rx='6' ry='1.8' stroke-opacity='0.12'/%3E%3C/g%3E%3C/svg%3E") !important;
+    background-size: 220px 220px !important;
+}
+
+/* 隐藏默认主题的胶带和笔记本打孔 */
+[data-theme="tingyu"] .tape,
+[data-theme="tingyu"] .binding-holes {
+    display: none !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 2. 大标题板块：【古建飞檐 + 檐角悬垂水滴】（独立形态 1） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .title-wrapper {
+    padding-top: 6px;
+}
+[data-theme="tingyu"] h1 {
+    background: none !important;
+    color: #364954 !important;
+    position: relative;
+    padding: 10px 26px 6px !important;
+    /* 顶部弧形飞檐线，底部极细水线 */
+    border-top: 3px solid #647f8f;
+    border-bottom: 1px dashed #9cb0bc;
+    border-radius: 18px 18px 0 0;
+}
+/* 左侧瓦当折角 */
+[data-theme="tingyu"] h1::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -6px;
+    width: 12px;
+    height: 8px;
+    border-top: 3px solid #364954;
+    border-left: 2px solid #364954;
+    border-radius: 4px 0 0 0;
+}
+/* 右侧屋檐角：悬挂一颗正要滴落的小雨珠！ */
+[data-theme="tingyu"] h1::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: -3px;
+    width: 7px;
+    height: 7px;
+    background-color: #7892a1;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    box-shadow: -3px -3px 0 -2px #9cb0bc;
+}
+[data-theme="tingyu"] .subtitle {
+    color: #748c99 !important;
+    font-style: normal !important;
+    letter-spacing: 2px;
+    margin-top: 6px !important;
+    position: relative;
+}
+
+/* -------------------------------------------------------------------- */
+/* 3. 分类导航栏：【斜切雨叶标签 vs 水面涟漪激活态】（独立形态 2） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .category-tabs {
+    padding: 6px 6px 10px 6px !important;
+    align-items: center;
+}
+/* 未选中分类：像一片片斜接雨水的竹叶/水滴切角 */
+[data-theme="tingyu"] .cat-tab {
+    border-radius: 2px 14px 2px 14px !important;
+    border: 1px solid #b5c6d0 !important;
+    background-color: #f2f6f8 !important;
+    color: #546b78 !important;
+    padding: 5px 16px !important;
+    box-shadow: none !important;
+    transition: all 0.25s ease !important;
+}
+/* 选中分类：瞬间化为浑圆的水面双圈涟漪，与未选中形成强烈形态反差 */
+[data-theme="tingyu"] .cat-tab.active,
+[data-theme="tingyu"] .cat-tab:hover {
+    border-radius: 999px !important;
+    background-color: #d3e1e8 !important;
+    border: 1px solid #647f8f !important;
+    color: #2b3c46 !important;
+    transform: translateY(-1px) !important;
+    /* 外扩一圈涟漪水环 */
+    box-shadow: 0 0 0 2px #e9eff2, 0 0 0 3px #9cb0bc !important;
+}
+/* 右侧管理按钮：做成方形“青石水牌”，左侧带双竖线刻度，绝不和分类标签雷同 */
+[data-theme="tingyu"] .manage-cat-btn {
+    border-radius: 3px 10px 10px 3px !important;
+    border: 1px solid #8ea5b2 !important;
+    border-left: 4px double #546e7d !important;
+    background-color: #dfeaef !important;
+    color: #364954 !important;
+    box-shadow: 2px 2px 0px #c5d4dc !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 4. API 卡片板块：【错落雨窗 + 奇偶不同雨景 + 不对称水滴按钮】（独立形态 3） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .api-card {
+    border: 1px solid #b3c4ce !important;
+    border-top: 3px solid #7d96a4 !important; /* 屋檐顶边 */
+    background-color: #f7fafb !important;
+    box-shadow: 0 4px 12px rgba(54, 73, 84, 0.04) !important;
+    padding: 20px 16px 14px 20px !important;
+    overflow: hidden;
+}
+
+/* ★ 打破卡片千篇一律：奇数卡片（左上雨滴圆角 + 右上角斜雨丝暗纹） */
+[data-theme="tingyu"] .api-card:nth-child(odd) {
+    border-radius: 18px 3px 14px 3px !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='90' height='90' viewBox='0 0 90 90' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%239cb0bc' stroke-width='1' stroke-opacity='0.22' stroke-linecap='round'%3E%3Cline x1='65' y1='10' x2='52' y2='35'/%3E%3Cline x1='80' y1='18' x2='70' y2='38'/%3E%3Cline x1='50' y1='8' x2='43' y2='22'/%3E%3C/g%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: top right !important;
+}
+
+/* ★ 打破卡片千篇一律：偶数卡片（右上雨滴圆角 + 底部偏左水波暗纹） */
+[data-theme="tingyu"] .api-card:nth-child(even) {
+    border-radius: 3px 18px 3px 14px !important;
+    border-top-color: #8fa6b3 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='120' height='40' viewBox='0 0 120 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='35' cy='32' rx='26' ry='6' fill='none' stroke='%239cb0bc' stroke-width='1' stroke-opacity='0.2'/%3E%3Cellipse cx='35' cy='32' rx='14' ry='3' fill='none' stroke='%239cb0bc' stroke-width='0.8' stroke-opacity='0.15'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: bottom left !important;
+}
+
+/* ★ 每逢第3张卡片：顶部变成“双层叠瓦”边框，细节更丰富 */
+[data-theme="tingyu"] .api-card:nth-child(3n) {
+    border-top: 4px double #647f8f !important;
+}
+
+/* 卡片左侧内壁：一道顺流而下的水痕装饰线 */
+[data-theme="tingyu"] .api-card::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 14px;
+    bottom: 35%;
+    width: 1px;
+    background-color: #d3e1e8;
+    box-shadow: 0 6px 0 1px #b5c6d0; /* 底部凝结一小点水珠 */
+    pointer-events: none;
+}
+
+/* 卡片右下角：半露出的水面同心涟漪 */
+[data-theme="tingyu"] .api-card::after {
+    content: "";
+    position: absolute;
+    bottom: -24px;
+    right: -24px;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    border: 1px solid rgba(138, 162, 176, 0.24);
+    box-shadow: inset 0 0 0 10px transparent, inset 0 0 0 11px rgba(138, 162, 176, 0.15);
+    pointer-events: none;
+}
+
+/* 保持批量选中时的勾号正常显示 */
+[data-theme="tingyu"] .api-card.selected::after {
+    content: "✓";
+    bottom: auto; right: auto;
+    width: auto; height: auto;
+    border: none; box-shadow: none;
+}
+
+[data-theme="tingyu"] .api-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: #7d96a4 !important;
+    box-shadow: 0 7px 18px rgba(54, 73, 84, 0.08) !important;
+}
+
+/* 卡片标题与分类小水滴章 */
+[data-theme="tingyu"] .api-card h3 {
+    border-bottom: 1px dashed #cedce3 !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 12px !important;
+    color: #364954 !important;
+    font-weight: normal;
+}
+[data-theme="tingyu"] .card-category-tag {
+    background: #dfeaef !important;
+    color: #49616e !important;
+    border: 1px solid #b5c6d0 !important;
+    /* 小标签做成横向小水滴形状 */
+    border-radius: 0 10px 10px 10px !important;
+    padding: 1px 7px !important;
+}
+
+/* ★ 卡片内部三颗按钮：拒绝一模一样！做成「左水滴、中平水、右水滴」组合 */
+[data-theme="tingyu"] .macaron-btn {
+    border: 1px solid #9cb0bc !important;
+    box-shadow: none !important;
+    font-weight: normal;
+    border-radius: 4px !important;
+}
+[data-theme="tingyu"] .card-buttons .macaron-btn:nth-child(1) {
+    border-radius: 12px 3px 3px 12px !important; /* 左圆右方 */
+}
+[data-theme="tingyu"] .card-buttons .macaron-btn:nth-child(2) {
+    border-radius: 3px !important; /* 中间方正水面 */
+    border-top: 1.5px solid #869eab !important;
+}
+[data-theme="tingyu"] .card-buttons .macaron-btn:nth-child(3) {
+    border-radius: 3px 12px 12px 3px !important; /* 左方右圆 */
+}
+
+[data-theme="tingyu"] .btn-blue { background-color: #d3e1e8 !important; color: #31444f !important; }
+[data-theme="tingyu"] .btn-yellow { background-color: #dce3e6 !important; color: #425259 !important; }
+[data-theme="tingyu"] .btn-green { background-color: #cfe0dd !important; color: #2f4743 !important; }
+[data-theme="tingyu"] .btn-pink { background-color: #dce3e8 !important; color: #46535c !important; }
+[data-theme="tingyu"] .btn-disabled {
+    background-color: #edf2f4 !important;
+    border-color: #d5dfe4 !important;
+    color: #a9b8c0 !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 5. 右下角 + 号悬浮按钮：【饱满欲滴的真实雨滴造型！】（核心需求 2） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .fab {
+    /* 经典水滴几何学：左上角为尖端(0)，其余三角为圆弧(50%)，再顺时针旋转45度让尖端朝正上方 */
+    border-radius: 0 50% 50% 50% !important;
+    transform: rotate(45deg) !important;
+    background-color: #647f8f !important;
+    border: 1.5px solid #f7fafb !important;
+    /* 水滴外围散开一圈淡淡的雨水光晕与下方涟漪阴影 */
+    box-shadow: 
+        inset -3px -3px 0px rgba(54, 73, 84, 0.2),
+        0 0 0 3px #d3e1e8, 
+        4px 4px 12px rgba(54, 73, 84, 0.18) !important;
+    /* 因为按钮旋转了45度，里面的 + 号刚好变成✖，如果希望保持正十字符号，用文字阴影微调居中 */
+    line-height: 52px !important;
+    text-align: center;
+}
+/* 让雨滴悬浮时像水珠颤动一样微微放大，并在下方荡开双层涟漪 */
+[data-theme="tingyu"] .fab:hover {
+    transform: rotate(45deg) scale(1.08) !important;
+    background-color: #546e7d !important;
+    box-shadow: 
+        inset -3px -3px 0px rgba(54, 73, 84, 0.25),
+        0 0 0 4px #e9eff2, 
+        0 0 0 6px #9cb0bc,
+        6px 6px 16px rgba(54, 73, 84, 0.22) !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 6. 详情页板块：【竹帘听雨轩窗 + 双股垂雨珠 + 水渍切角书签】（独立形态 4） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .notebook-paper {
+    /* 上方圆润如窗拱，下方利落如窗台 */
+    border-radius: 16px 16px 4px 4px !important;
+    border: 1px solid #9cb0bc !important;
+    border-bottom: 4px solid #647f8f !important; /* 厚实的青石窗台底边 */
+    background-color: #f7fafb !important;
+    /* 顶部自带一段细密的“竹帘”横纹，下面完全干净 */
+    background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(156, 176, 188, 0.15) 0px,
+        rgba(156, 176, 188, 0.15) 1px,
+        transparent 1px,
+        transparent 5px
+    ) !important;
+    background-size: 100% 22px !important;
+    background-repeat: no-repeat !important;
+    box-shadow: 0 14px 30px rgba(54, 73, 84, 0.1) !important;
+    padding: 32px 24px 22px 42px !important;
+}
+
+/* 详情页左侧专属：长短两根檐下垂雨丝 */
+[data-theme="tingyu"] .notebook-paper::before {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 0;
+    height: 68%;
+    width: 1px;
+    background-color: #9cb0bc;
+    /* 旁边伴随第二根较短的雨丝 */
+    box-shadow: 6px -45px 0 0 #bdcdd6;
+}
+/* 雨丝末端凝结的空心水珠与散落小水点 */
+[data-theme="tingyu"] .notebook-paper::after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 68%;
+    width: 7px;
+    height: 7px;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    border: 1.2px solid #647f8f;
+    background-color: #d3e1e8;
+    box-shadow: 10px 6px 0 -2px #9cb0bc;
+}
+
+[data-theme="tingyu"] .notebook-paper h2 {
+    background: transparent !important;
+    border-bottom: 1px solid #cddae0 !important;
+    display: block !important;
+    padding: 0 35px 10px 0 !important;
+    margin-bottom: 14px !important;
+    font-size: 1.25rem !important;
+    font-weight: normal;
+}
+
+[data-theme="tingyu"] .detail-content {
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* 详情页里的 URL/KEY 条目：做成“左侧滴水标 + 右侧斜切角”的书签条，和卡片、设置页完全不同 */
+[data-theme="tingyu"] .detail-content p {
+    background-color: #eef4f7 !important;
+    border: 1px solid #d5e2e8 !important;
+    border-left: 3px solid #7892a1 !important;
+    border-radius: 2px 12px 2px 12px !important;
+    padding: 8px 12px !important;
+    margin-bottom: 12px !important;
+    position: relative;
+}
+
+[data-theme="tingyu"] .box-text {
+    color: #546e7d !important;
+    font-weight: normal;
+}
+
+/* 详情页第2页（模型列表）：做成错落的“水面浮萍阶梯” */
+[data-theme="tingyu"] .model-item {
+    background: #eef4f7 !important;
+    border: 1px solid #c2d2db !important;
+    border-radius: 12px 2px 12px 2px !important;
+}
+[data-theme="tingyu"] .model-item:nth-child(even) {
+    border-radius: 2px 12px 2px 12px !important;
+    background: #f2f7f9 !important;
+}
+
+[data-theme="tingyu"] .flip-actions {
+    border-top: 1px dashed #c2d2db !important;
+    padding-top: 12px !important;
+}
+[data-theme="tingyu"] .flip-btn,
+[data-theme="tingyu"] .sticker-btn {
+    border-radius: 12px 2px 12px 2px !important;
+    border: 1px solid #8ea5b2 !important;
+    background-color: #d3e1e8 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    color: #364954 !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 7. 添加/管理/设置弹窗：【水波纹顶栏 + 纯横波底线输入框】（独立形态 5） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .modal,
+[data-theme="tingyu"] .settings-panel {
+    /* 不对称雨石圆角 */
+    border-radius: 4px 20px 4px 20px !important;
+    border: 1px solid #9cb0bc !important;
+    background-color: #f7fafb !important;
+    /* 弹窗顶部自带一条连绵的青灰水波浪纹 */
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='12' viewBox='0 0 40 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8 Q 10 2, 20 8 T 40 8' fill='none' stroke='%238ea5b2' stroke-width='1.5' stroke-opacity='0.45'/%3E%3C/svg%3E") !important;
+    background-repeat: repeat-x !important;
+    background-position: top center !important;
+    box-shadow: 0 12px 30px rgba(54, 73, 84, 0.09) !important;
+}
+
+[data-theme="tingyu"] .settings-header {
+    background: transparent !important;
+    border-bottom: 1px dashed #c5d4dc !important;
+    padding-top: 24px !important;
+}
+
+/* 设置页分块：左侧加一颗小雨滴标记 */
+[data-theme="tingyu"] .settings-section {
+    background-color: #f0f5f7;
+    padding: 14px 16px;
+    border-radius: 2px 14px 2px 14px;
+    border: 1px solid #dce5ea;
+}
+
+[data-theme="tingyu"] .modal h2 {
+    font-weight: normal;
+    color: #364954 !important;
+    border-bottom: 1px dashed #cddae0 !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 20px !important;
+}
+
+/* ★ 输入框打破传统方框：去掉左右上边框，做成纯粹的“水面横波底线”！ */
+[data-theme="tingyu"] .input-group input,
+[data-theme="tingyu"] .hand-drawn-select,
+[data-theme="tingyu"] .add-model-group input {
+    border-radius: 4px 4px 0 0 !important;
+    border: none !important;
+    border-bottom: 1.5px solid #8ea5b2 !important;
+    background-color: rgba(211, 225, 232, 0.35) !important;
+    box-shadow: none !important;
+    transition: all 0.2s;
+}
+[data-theme="tingyu"] .input-group input:focus,
+[data-theme="tingyu"] .add-model-group input:focus {
+    background-color: #ffffff !important;
+    border-bottom: 2px solid #546e7d !important;
+}
+
+[data-theme="tingyu"] .btn-save {
+    background-color: #647f8f !important;
+    color: #ffffff !important;
+    border: 1px solid #526978 !important;
+    border-radius: 2px 12px 2px 12px !important;
+    box-shadow: none !important;
+}
+[data-theme="tingyu"] .btn-cancel {
+    background-color: #ebf1f4 !important;
+    border: 1px solid #b5c6d0 !important;
+    border-radius: 12px 2px 12px 2px !important;
+    box-shadow: none !important;
+}
+
+/* 弹窗内的多选分类标签：做成小水滴形状 */
+[data-theme="tingyu"] .multi-cat-tag {
+    border-radius: 0 12px 12px 12px !important;
+    border: 1px solid #b5c6d0 !important;
+    background: #f0f5f7 !important;
+}
+[data-theme="tingyu"] .multi-cat-tag.active {
+    background: #d3e1e8 !important;
+    border: 1px solid #647f8f !important;
+    box-shadow: 0 0 0 2px #e9eff2, 0 0 0 3px #9cb0bc !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 8. 底部批量操作栏：【一排晶莹雨滴按钮】（独立形态 6） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .bottom-action-sheet {
+    background: #f2f6f8 !important;
+    border-top: 2px solid #9cb0bc !important;
+    box-shadow: 0 -6px 20px rgba(54, 73, 84, 0.08) !important;
+}
+/* 底部栏的每个图标外框都变成一颗斜向小雨滴 */
+[data-theme="tingyu"] .action-icon {
+    border-radius: 0 50% 50% 50% !important;
+    border-width: 1.5px !important;
+    background: #f7fafb !important;
 }

@@ -155,46 +155,51 @@
         </div>
     </div>
 
-    <!-- 隐藏彩蛋升级版：长按标题呼出的设置与云备份面板 -->
-    <div id="settings-overlay" class="hidden">
-        <div class="settings-page hand-drawn-border">
-            <div class="tape top-center"></div>
-            <button class="close-btn" onclick="closeSettings()" style="top:15px; right:15px;" title="关闭">✖</button>
-            <h2 style="text-align: center; margin-bottom: 20px;">设置与备份 ⚙️</h2>
-            
-            <div class="settings-section">
-                <h3>☁️ GitHub 云端同步</h3>
-                <p class="settings-tip">填写 Token 即可直接与 GitHub 仓库同步数据</p>
-                <div class="input-group">
-                    <label>GitHub Token (须勾选 repo 权限)</label>
-                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-                </div>
-                <div class="input-group">
-                    <label>用户名 (Username)</label>
-                    <input type="text" id="gh-username" placeholder="你的 GitHub 用户名">
-                </div>
-                <div class="input-group">
-                    <label>仓库名 (Repository)</label>
-                    <input type="text" id="gh-repo" value="xucenhe-backup">
-                </div>
-                <div class="input-group">
-                    <label>文件名 (File Path)</label>
-                    <input type="text" id="gh-path" value="xucenhe_backup.json">
-                </div>
-                <div class="settings-actions">
-                    <button onclick="syncToGithub()" class="macaron-btn btn-blue">☁️ 备份到云端</button>
-                    <button onclick="syncFromGithub()" class="macaron-btn btn-yellow">⬇️ 从云端恢复</button>
-                </div>
+    <!-- 全新设计的设置与云备份面板 (现代极简风，无胶带，无Emoji) -->
+    <div id="settings-overlay" class="hidden" onclick="if(event.target===this)closeSettings()">
+        <div class="settings-panel">
+            <!-- 固定头部 -->
+            <div class="settings-header">
+                <h2>设置与备份</h2>
+                <button type="button" class="close-icon-btn" onclick="closeSettings()" title="关闭">✖</button>
             </div>
+            
+            <!-- 可滚动的内部主体 -->
+            <div class="settings-body">
+                <div class="settings-section">
+                    <h3>❖ GitHub 云端同步</h3>
+                    <p class="settings-tip">填写 Token 即可直接与 GitHub 仓库同步数据</p>
+                    <div class="input-group">
+                        <label>GitHub Token (须勾选 repo 权限)</label>
+                        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                    </div>
+                    <div class="input-group">
+                        <label>用户名</label>
+                        <input type="text" id="gh-username" placeholder="你的 GitHub 用户名">
+                    </div>
+                    <div class="input-group">
+                        <label>仓库名</label>
+                        <input type="text" id="gh-repo" value="xucenhe-backup">
+                    </div>
+                    <div class="input-group">
+                        <label>文件名</label>
+                        <input type="text" id="gh-path" value="xucenhe_backup.json">
+                    </div>
+                    <div class="settings-actions">
+                        <button type="button" onclick="syncToGithub()" class="macaron-btn btn-blue">⭳ 备份到云端</button>
+                        <button type="button" onclick="syncFromGithub()" class="macaron-btn btn-yellow">⭱ 从云端恢复</button>
+                    </div>
+                </div>
 
-            <div class="settings-section">
-                <h3>📦 本地文件备份</h3>
-                <p class="settings-tip">下载文件保存，或读取本地文件恢复</p>
-                <div class="settings-actions">
-                    <button onclick="exportData()" class="macaron-btn btn-green">⬇️ 导出备份文件</button>
-                    <button onclick="triggerImport()" class="macaron-btn btn-pink">⬆️ 导入备份文件</button>
-                    <!-- 隐藏的文件选择器 -->
-                    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+                <div class="settings-section">
+                    <h3>❖ 本地文件备份</h3>
+                    <p class="settings-tip">下载文件保存，或读取本地文件恢复</p>
+                    <div class="settings-actions">
+                        <button type="button" onclick="exportData()" class="macaron-btn btn-green">⭳ 导出备份文件</button>
+                        <button type="button" onclick="triggerImport()" class="macaron-btn btn-pink">⭱ 导入备份文件</button>
+                        <!-- 隐藏的文件选择器 -->
+                        <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+                    </div>
                 </div>
             </div>
         </div>

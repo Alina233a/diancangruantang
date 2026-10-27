@@ -430,7 +430,7 @@ window.syncToGithub = async function() {
         const putRes = await fetch(url, { method: "PUT", headers: headers, body: JSON.stringify(body) });
 
         if (putRes.ok) {
-            alert("☁️ 成功备份到 GitHub 仓库！");
+            alert("成功备份到 GitHub 仓库啦！/ᐠ  ⁃͈ 𖥦 ⁃͈ マ ੭");
         } else {
             const errData = await putRes.json();
             alert(`备份失败: ${errData.message}`);
@@ -565,21 +565,31 @@ function initApp() {
         document.body.style.overflow = '';
     };
 
-    // 绑定标题长按与双击打开设置面板
+    // 绑定标题触发事件 (电脑右键打开，手机长按打开)
     const mainTitle = document.getElementById('main-title');
     if (mainTitle) {
+        // 电脑端：右键打开设置
+        mainTitle.addEventListener('contextmenu', (e) => {
+            e.preventDefault(); // 阻止浏览器默认的右键菜单
+            openSettings();
+        });
+
+        // 手机端：长按打开设置
         let pressTimer;
-        const startPress = () => { pressTimer = setTimeout(() => { openSettings(); if(navigator.vibrate) navigator.vibrate(50); }, 600); };
+        const startPress = () => { 
+            pressTimer = setTimeout(() => { 
+                openSettings(); 
+                if(navigator.vibrate) navigator.vibrate(50); 
+            }, 600); 
+        };
         const cancelPress = () => clearTimeout(pressTimer);
         
-        mainTitle.addEventListener('contextmenu', e => e.preventDefault());
         mainTitle.addEventListener('touchstart', startPress, { passive: true });
         mainTitle.addEventListener('touchend', cancelPress);
         mainTitle.addEventListener('touchcancel', cancelPress);
         mainTitle.addEventListener('touchmove', cancelPress);
-        mainTitle.addEventListener('mousedown', startPress);
-        mainTitle.addEventListener('mouseup', cancelPress);
-        mainTitle.addEventListener('mouseleave', cancelPress);
+        
+        // 双击保险机制（双端均可使用）
         mainTitle.addEventListener('dblclick', openSettings);
     }
     

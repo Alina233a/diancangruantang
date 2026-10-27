@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 素笔闲抄专属：真实铅笔手绘抖动与毛边 SVG 滤镜引擎 -->
+    <svg width="0" height="0" style="position:absolute; pointer-events:none;">
+        <defs>
+            <!-- 卡片与弹窗用的细铅笔素描滤镜 -->
+            <filter id="pencil-sketch" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="4" result="noise" seed="2"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <!-- 按钮与小标签用的微绒毛铅笔滤镜 -->
+            <filter id="pencil-btn" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.15" numOctaves="3" result="noise" seed="5"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+    
     <header>
         <div class="title-wrapper">
             <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;" title="电脑右键 / 手机长按进入设置">叙岑盒</h1>

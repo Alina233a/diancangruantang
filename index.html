@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>典藏软盒</title>
+    <title>叙岑盒</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <div class="title-wrapper">
-            <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;">典藏软盒</h1>
+            <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;">叙岑盒</h1>
             <span class="subtitle">My API Collection</span>
         </div>
     </header>
@@ -155,21 +155,48 @@
         </div>
     </div>
 
-    <!-- 隐藏彩蛋：长按标题呼出的备份恢复弹窗 -->
-    <div id="backup-modal-overlay" class="hidden">
-        <div class="modal hand-drawn-border" style="text-align: center;">
+    <!-- 隐藏彩蛋升级版：长按标题呼出的设置与云备份面板 -->
+    <div id="settings-overlay" class="hidden">
+        <div class="settings-page hand-drawn-border">
             <div class="tape top-center"></div>
-            <h2 style="margin-bottom: 10px;">时光机 📦</h2>
-            <p style="font-size: 0.85rem; color: var(--main-purple); margin-bottom: 25px;">
-                定期备份你的宝藏数据喔！
-            </p>
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <button onclick="exportData()" class="macaron-btn btn-green" style="padding: 12px; font-size: 1rem;">⬇️ 导出备份 (保存为文件)</button>
-                <button onclick="triggerImport()" class="macaron-btn btn-yellow" style="padding: 12px; font-size: 1rem;">⬆️ 导入备份 (恢复数据)</button>
-                <!-- 隐藏的文件选择器 -->
-                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+            <button class="close-btn" onclick="closeSettings()" style="top:15px; right:15px;" title="关闭">✖</button>
+            <h2 style="text-align: center; margin-bottom: 20px;">设置与备份 ⚙️</h2>
+            
+            <div class="settings-section">
+                <h3>☁️ GitHub 云端同步</h3>
+                <p class="settings-tip">填写 Token 即可直接与 GitHub 仓库同步数据</p>
+                <div class="input-group">
+                    <label>GitHub Token (须勾选 repo 权限)</label>
+                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                </div>
+                <div class="input-group">
+                    <label>用户名 (Username)</label>
+                    <input type="text" id="gh-username" placeholder="你的 GitHub 用户名">
+                </div>
+                <div class="input-group">
+                    <label>仓库名 (Repository)</label>
+                    <input type="text" id="gh-repo" value="xucenhe-backup">
+                </div>
+                <div class="input-group">
+                    <label>文件名 (File Path)</label>
+                    <input type="text" id="gh-path" value="xucenhe_backup.json">
+                </div>
+                <div class="settings-actions">
+                    <button onclick="syncToGithub()" class="macaron-btn btn-blue">☁️ 备份到云端</button>
+                    <button onclick="syncFromGithub()" class="macaron-btn btn-yellow">⬇️ 从云端恢复</button>
+                </div>
             </div>
-            <button onclick="closeBackupModal()" class="btn-cancel hand-drawn-border" style="margin-top: 25px; width: 100%; padding: 10px;">取消</button>
+
+            <div class="settings-section">
+                <h3>📦 本地文件备份</h3>
+                <p class="settings-tip">下载文件保存，或读取本地文件恢复</p>
+                <div class="settings-actions">
+                    <button onclick="exportData()" class="macaron-btn btn-green">⬇️ 导出备份文件</button>
+                    <button onclick="triggerImport()" class="macaron-btn btn-pink">⬆️ 导入备份文件</button>
+                    <!-- 隐藏的文件选择器 -->
+                    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+                </div>
+            </div>
         </div>
     </div>
 

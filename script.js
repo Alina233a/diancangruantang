@@ -372,37 +372,157 @@ window.deleteAPI = (e, index) => {
     }
 };
 
-// 备份恢复
-window.exportData = () => {
-    const blob = new Blob([JSON.stringify({ categories: categoryList, apis: apiList }, null, 2)], { type: "application/json" });
+// ==========================================
+// ⚙️ 全新设置页 & GitHub云同步 & 本地备份
+// ==========================================
+
+window.openSettings = function() {
+    document.getElementById('gh-token').value = localStorage.getItem('xc_gh_token') || '';
+    document.getElementById('gh-username').value = localStorage.getItem('xc_gh_user') || '';
+    document.getElementById('gh-repo').value = localStorage.getItem('xc_gh_repo') || 'xucenhe-backup';
+    document.getElementById('gh-path').value = localStorage.getItem('xc_gh_path') || 'xucenhe_backup.json';
+    
+    document.getElementById('settings-overlay').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+window.closeSettings = function() {
+    document.getElementById('settings-overlay').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// 保存配置到本地，免得每次输入
+function saveGhConfig(token, user, repo, path) {
+    localStorage.setItem('xc_gh_token', token);
+    localStorage.setItem('xc_gh_user', user);
+    localStorage.setItem('xc_gh_repo', repo);
+    localStorage.setItem('xc_gh_path', path);
+}
+
+// 备份到 GitHub
+window.syncToGithub = async function() {
+    const token = document.getElementById('gh-token').value.trim();
+    const user = document.getElementById('gh-username').value.trim();
+    const repo = document.getElementById('gh-repo').value.trim();
+    const path = document.getElementById('gh-path').value.trim();
+
+    if (!token || !user || !repo || !path) return alert("请填写完整的 GitHub 配置信息喔！");
+    saveGhConfig(token, user, repo, path);
+
+    const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+    const headers = { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json" };
+
+    try {
+        let sha = null;
+        const getRes = await fetch(url, { headers });
+        if (getRes.ok) {
+            const data = await getRes.json();
+            sha = data.sha;
+        }
+
+        const backupData = { categories: categoryList, apis: apiList, exportDate: new Date().toLocaleString() };
+        // 解决 Base64 编码中文报错
+        const base64Content = btoa(unescape(encodeURIComponent(JSON.stringify(backupData, null, 2))));
+        
+        const body = { message: "Backup from 叙岑盒", content: base64Content };
+        if (sha) body.sha = sha;
+
+        const putRes = await fetch(url, { method: "PUT", headers: headers, body: JSON.stringify(body) });
+
+        if (putRes.ok) {
+            alert("☁️ 成功备份到 GitHub 仓库！");
+        } else {
+            const errData = await putRes.json();
+            alert(`备份失败: ${errData.message}`);
+        }
+    } catch (err) {
+        console.error(err);
+        alert("网络错误，无法连接到 GitHub API");
+    }
+}
+
+// 从 GitHub 恢复
+window.syncFromGithub = async function() {
+    const token = document.getElementById('gh-token').value.trim();
+    const user = document.getElementById('gh-username').value.trim();
+    const repo = document.getElementById('gh-repo').value.trim();
+    const path = document.getElementById('gh-path').value.trim();
+
+    if (!token || !user || !repo || !path) return alert("请填写完整的 GitHub 配置信息喔！");
+    saveGhConfig(token, user, repo, path);
+
+    const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+    const headers = { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json" };
+
+    try {
+        const res = await fetch(url, { headers });
+        if (!res.ok) {
+            if (res.status === 404) return alert("云端还没有这个备份文件喔 (404)！");
+            return alert("获取失败，请检查 Token 权限或仓库信息是否正确");
+        }
+
+        const data = await res.json();
+        const jsonStr = decodeURIComponent(escape(atob(data.content)));
+        const parsedData = JSON.parse(jsonStr);
+
+        if (parsedData.categories && parsedData.apis) {
+            if (confirm("云端数据读取成功！要覆盖本地数据吗？（原有数据将被替换噢！想清楚呀宝宝）")) {
+                localStorage.setItem('softboxCategoryStore', JSON.stringify(parsedData.categories));
+                localStorage.setItem('softboxApiStore', JSON.stringify(parsedData.apis));
+                alert("云端数据恢复成功啦！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
+                location.reload(); 
+            }
+        } else {
+            alert("云端的数据格式不匹配喔~");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("解析云端数据失败，请确认文件内容正确");
+    }
+}
+
+// 本地文件导出
+window.exportData = function() {
+    const backupData = { categories: categoryList, apis: apiList, exportDate: new Date().toLocaleString() };
+    const dataStr = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
+    
     const a = document.createElement('a');
     a.href = url;
-    a.download = `软盒备份_${new Date().toISOString().slice(0, 10).replace(/-/g, "")}.json`;
+    const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, ""); 
+    a.download = `叙岑盒备份_${dateStr}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    window.closeBackupModal();
-};
-window.triggerImport = () => document.getElementById('import-file').click();
-window.importData = (event) => {
+    closeSettings();
+}
+
+// 本地文件导入
+window.triggerImport = function() { document.getElementById('import-file').click(); }
+window.importData = function(event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = function(e) {
         try {
             const data = JSON.parse(e.target.result);
-            localStorage.setItem('softboxCategoryStore', JSON.stringify(data.categories || []));
-            localStorage.setItem('softboxApiStore', JSON.stringify(data.apis || []));
-            alert("恢复成功！");
-            location.reload();
-        } catch (err) { alert("文件可能损坏~"); }
+            if (data.categories && data.apis) {
+                localStorage.setItem('softboxCategoryStore', JSON.stringify(data.categories));
+                localStorage.setItem('softboxApiStore', JSON.stringify(data.apis));
+                alert("本地数据恢复成功啦！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
+                location.reload(); 
+            } else {
+                alert("这个文件好像不是叙岑盒的备份文件呀＞ᨓ＜");
+            }
+        } catch (err) {
+            alert("读取失败了，备份文件可能损坏了耶߹꒳߹");
+        }
     };
     reader.readAsText(file);
-    event.target.value = '';
-};
-window.closeBackupModal = () => { document.getElementById('backup-modal-overlay').classList.add('hidden'); document.body.style.overflow = ''; };
+    event.target.value = ''; 
+}
 
-// 🚀 初始化
+// 🚀 启动与绑定事件监听
 function initApp() {
     loadDataFromStorage();
     
@@ -418,7 +538,7 @@ function initApp() {
         document.body.style.overflow = '';
     };
 
-    const overlays = ['modal-overlay', 'detail-modal-overlay'];
+    const overlays = ['modal-overlay', 'detail-modal-overlay', 'settings-overlay'];
     overlays.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('click', (e) => {
@@ -445,20 +565,22 @@ function initApp() {
         document.body.style.overflow = '';
     };
 
+    // 绑定标题长按与双击打开设置面板
     const mainTitle = document.getElementById('main-title');
-    const backupModal = document.getElementById('backup-modal-overlay');
-    if (mainTitle && backupModal) {
+    if (mainTitle) {
         let pressTimer;
-        const openBackup = () => { backupModal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
-        const startPress = () => { pressTimer = setTimeout(openBackup, 600); };
-        const cancelPress = () => { clearTimeout(pressTimer); };
+        const startPress = () => { pressTimer = setTimeout(() => { openSettings(); if(navigator.vibrate) navigator.vibrate(50); }, 600); };
+        const cancelPress = () => clearTimeout(pressTimer);
         
+        mainTitle.addEventListener('contextmenu', e => e.preventDefault());
         mainTitle.addEventListener('touchstart', startPress, { passive: true });
         mainTitle.addEventListener('touchend', cancelPress);
+        mainTitle.addEventListener('touchcancel', cancelPress);
+        mainTitle.addEventListener('touchmove', cancelPress);
         mainTitle.addEventListener('mousedown', startPress);
         mainTitle.addEventListener('mouseup', cancelPress);
         mainTitle.addEventListener('mouseleave', cancelPress);
-        mainTitle.addEventListener('dblclick', openBackup);
+        mainTitle.addEventListener('dblclick', openSettings);
     }
     
     renderCategories();

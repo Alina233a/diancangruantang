@@ -1,20 +1,23 @@
+// 【初始化主题设置】
+(function() {
+    const savedTheme = localStorage.getItem('xc_theme') || 'default';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+})();
+
 window.onerror = function(msg, source, lineno) {
     console.error("捕获到错误:", msg, "行号:", lineno);
     return false;
 };
 
-// 🛡️ 安全转义工具函数（防止旧数据中含有单引号、换行符导致页面崩溃）
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-
 function escapeJsStr(str) {
     if (str === null || str === undefined) return '';
     return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n').replace(/\r/g, '');
 }
 
-// 全局状态变量
 let currentDetailIndex = -1;
 let currentCategory = '全部';
 let isBatchMode = false;
@@ -22,7 +25,6 @@ let selectedApis = [];
 let categoryList = [];
 let apiList = [];
 
-// 🔄 安全读取数据
 function loadDataFromStorage() {
     let rawList = [];
     try {
@@ -36,9 +38,7 @@ function loadDataFromStorage() {
             const parsedApi = JSON.parse(apiData);
             if (Array.isArray(parsedApi)) rawList = parsedApi;
         }
-    } catch (e) {
-        console.error("读取数据失败:", e);
-    }
+    } catch (e) {}
 
     apiList = rawList.map(api => {
         if (!api || typeof api !== 'object') return { name: "恢复的数据", url: "", key: "", share: "", categories: [], models: [] };
@@ -61,9 +61,7 @@ function saveAllData() {
     try {
         localStorage.setItem('softboxCategoryStore', JSON.stringify(categoryList));
         localStorage.setItem('softboxApiStore', JSON.stringify(apiList));
-    } catch (e) {
-        console.error("保存失败:", e);
-    }
+    } catch (e) {}
 }
 
 function getFilteredList() {
@@ -72,7 +70,6 @@ function getFilteredList() {
     return apiList;
 }
 
-// 🎨 渲染函数
 function renderCategories() {
     const tabsContainer = document.getElementById('category-tabs');
     if (!tabsContainer) return;
@@ -108,7 +105,7 @@ function renderAPIs() {
     apiContainer.innerHTML = '';
     const filteredList = getFilteredList();
     if (filteredList.length === 0) {
-        apiContainer.innerHTML = '<p style="text-align:center; width:100%; color:#bca0dc; font-size:1.1rem; margin-top: 40px; font-weight: bold;">这里还空着喔 ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა</p>';
+        apiContainer.innerHTML = '<p style="text-align:center; width:100%; color:var(--main-purple); font-size:1.1rem; margin-top: 40px; font-weight: bold;">这里还空着喔 ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა</p>';
         return;
     }
 
@@ -152,7 +149,28 @@ function renderAPIs() {
     });
 }
 
-// 🖱️ 全局交互函数
+function renderModels() {
+    const listEl = document.getElementById('model-list');
+    listEl.innerHTML = '';
+    const models = apiList[currentDetailIndex]?.models || [];
+    if (models.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; color: var(--main-purple); font-size: 0.9rem; margin-top:20px;">还没有添加任何模型喔</p>';
+        return;
+    }
+    models.forEach((model, mIndex) => {
+        const item = document.createElement('div');
+        item.className = 'model-item';
+        item.innerHTML = `
+            <span class="model-item-name">${escapeHtml(model)}</span>
+            <div class="model-actions-btn">
+                <button class="sticker-btn btn-blue copy-icon-btn" onclick="copyText(event, '${escapeJsStr(model)}')">⧉</button>
+                <button class="model-delete-btn" onclick="deleteModel(${mIndex})">✖</button>
+            </div>
+        `;
+        listEl.appendChild(item);
+    });
+}
+
 window.switchCategory = function(catName) {
     if (isBatchMode) return;
     currentCategory = catName;
@@ -160,23 +178,22 @@ window.switchCategory = function(catName) {
     renderAPIs();
 };
 
-window.openManageMenu = () => document.getElementById('manage-menu-overlay').classList.remove('hidden');
-window.closeManageMenu = () => document.getElementById('manage-menu-overlay').classList.add('hidden');
-
-window.showBatchMove = () => {
+window.openManageMenu = function() { document.getElementById('manage-menu-overlay').classList.remove('hidden'); };
+window.closeManageMenu = function() { document.getElementById('manage-menu-overlay').classList.add('hidden'); };
+window.showBatchMove = function() {
     if (selectedApis.length === 0) return alert("请先选中要追加分类的卡片喔！");
     document.querySelectorAll('#batch-category-list .multi-cat-tag').forEach(el => el.classList.remove('active'));
     document.getElementById('batch-move-overlay').classList.remove('hidden');
 };
-window.closeBatchMove = () => document.getElementById('batch-move-overlay').classList.add('hidden');
+window.closeBatchMove = function() { document.getElementById('batch-move-overlay').classList.add('hidden'); };
 
-window.openCategoryManage = () => {
+window.openCategoryManage = function() {
     if (isBatchMode) return alert("请先退出批量管理模式喔");
     const action = prompt("输入新分类名称来添加，或者输入 '-分类名' 来删除（例如：-游戏）：");
     if (!action) return;
     if (action.startsWith('-')) {
         const target = action.substring(1).trim();
-        if (confirm(`确定要删掉 [${target}] 分类吗？ Ovo`)) {
+        if (confirm(`确定要删掉 [${target}] 分类吗？ ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა`)) {
             categoryList = categoryList.filter(c => c !== target);
             apiList.forEach(api => { if (api.categories) api.categories = api.categories.filter(c => c !== target); });
         }
@@ -190,7 +207,7 @@ window.openCategoryManage = () => {
     renderAPIs();
 };
 
-window.toggleBatchMode = () => {
+window.toggleBatchMode = function() {
     isBatchMode = !isBatchMode;
     selectedApis = [];
     document.getElementById('batch-action-bar').classList.toggle('hidden', !isBatchMode);
@@ -199,7 +216,7 @@ window.toggleBatchMode = () => {
     renderAPIs();
 };
 
-window.moveUp = () => {
+window.moveUp = function() {
     if (selectedApis.length !== 1) return alert("请仅选中 1 个卡片进行移动喔！");
     const globalIdx = selectedApis[0];
     const currentFiltered = getFilteredList();
@@ -213,7 +230,7 @@ window.moveUp = () => {
     }
 };
 
-window.moveDown = () => {
+window.moveDown = function() {
     if (selectedApis.length !== 1) return alert("请仅选中 1 个卡片进行移动喔！");
     const globalIdx = selectedApis[0];
     const currentFiltered = getFilteredList();
@@ -227,7 +244,7 @@ window.moveDown = () => {
     }
 };
 
-window.batchMove = () => {
+window.batchMove = function() {
     const activeEls = document.querySelectorAll('#batch-category-list .active');
     const targetCats = Array.from(activeEls).map(el => el.innerText);
     if (targetCats.length === 0) return alert("请在上面点击选择至少一个分类标签喔！");
@@ -241,9 +258,9 @@ window.batchMove = () => {
     toggleBatchMode();
 };
 
-window.batchDelete = () => {
+window.batchDelete = function() {
     if (selectedApis.length === 0) return alert("请先选中要删除的卡片喔！");
-    if (confirm(`确定要一口气删掉这 ${selectedApis.length} 个站子吗？ Ovo`)) {
+    if (confirm(`确定要一口气删掉这 ${selectedApis.length} 个站子吗？ ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა`)) {
         selectedApis.sort((a, b) => b - a).forEach(index => apiList.splice(index, 1));
         saveAllData();
         toggleBatchMode();
@@ -251,7 +268,7 @@ window.batchDelete = () => {
     }
 };
 
-window.openDetail = (index) => {
+window.openDetail = function(index) {
     if (!apiList[index]) return;
     currentDetailIndex = index;
     const api = apiList[index];
@@ -266,7 +283,7 @@ window.openDetail = (index) => {
     document.body.style.overflow = 'hidden';
 };
 
-window.editApiInfo = () => {
+window.editApiInfo = function() {
     if (currentDetailIndex === -1 || !apiList[currentDetailIndex]) return;
     const api = apiList[currentDetailIndex];
     const newName = prompt("修改 API 名称：", api.name);
@@ -288,34 +305,12 @@ window.editApiInfo = () => {
     renderAPIs();
 };
 
-window.flipPage = (targetPage) => {
+window.flipPage = function(targetPage) {
     document.getElementById('page-1').classList.toggle('d-none', targetPage === 2);
     document.getElementById('page-2').classList.toggle('d-none', targetPage === 1);
 };
 
-function renderModels() {
-    const listEl = document.getElementById('model-list');
-    listEl.innerHTML = '';
-    const models = apiList[currentDetailIndex]?.models || [];
-    if (models.length === 0) {
-        listEl.innerHTML = '<p style="text-align:center; color: #bca0dc; font-size: 0.9rem; margin-top:20px;">还没有添加任何模型喔</p>';
-        return;
-    }
-    models.forEach((model, mIndex) => {
-        const item = document.createElement('div');
-        item.className = 'model-item';
-        item.innerHTML = `
-            <span class="model-item-name">${escapeHtml(model)}</span>
-            <div class="model-actions-btn">
-                <button class="sticker-btn btn-blue copy-icon-btn" onclick="copyText(event, '${escapeJsStr(model)}')">⧉</button>
-                <button class="model-delete-btn" onclick="deleteModel(${mIndex})">✖</button>
-            </div>
-        `;
-        listEl.appendChild(item);
-    });
-}
-
-window.addModel = () => {
+window.addModel = function() {
     const input = document.getElementById('new-model-input');
     const modelName = input.value.trim();
     if (modelName && currentDetailIndex !== -1) {
@@ -327,15 +322,15 @@ window.addModel = () => {
     }
 };
 
-window.deleteModel = (modelIndex) => {
-    if (confirm("确定删除吗？ Ovo")) {
+window.deleteModel = function(modelIndex) {
+    if (confirm("确定删除吗？ ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა")) {
         apiList[currentDetailIndex].models.splice(modelIndex, 1);
         saveAllData();
         renderModels();
     }
 };
 
-window.copyText = (e, text) => {
+window.copyText = function(e, text) {
     if (e && e.stopPropagation) e.stopPropagation();
     if (!text || text === "无" || isBatchMode) return;
     const btn = e.currentTarget || e.target;
@@ -362,9 +357,9 @@ function fallbackCopy(text, callback) {
     document.body.removeChild(ta);
 }
 
-window.deleteAPI = (e, index) => {
+window.deleteAPI = function(e, index) {
     if (e && e.stopPropagation) e.stopPropagation();
-    if (confirm("擦除记录？ Ovo")) {
+    if (confirm("确定要擦除记录吗？ ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა")) {
         apiList.splice(index, 1);
         saveAllData();
         renderCategories();
@@ -373,10 +368,17 @@ window.deleteAPI = (e, index) => {
 };
 
 // ==========================================
-// ⚙️ 全新设置页 & GitHub云同步 & 本地备份
+// ⚙️ 设置页 & 主题切换 & 云同步
 // ==========================================
+window.changeTheme = function(themeName) {
+    document.documentElement.setAttribute('data-theme', themeName);
+    localStorage.setItem('xc_theme', themeName);
+};
 
 window.openSettings = function() {
+    const currentTheme = localStorage.getItem('xc_theme') || 'default';
+    document.getElementById('theme-selector').value = currentTheme;
+    
     document.getElementById('gh-token').value = localStorage.getItem('xc_gh_token') || '';
     document.getElementById('gh-username').value = localStorage.getItem('xc_gh_user') || '';
     document.getElementById('gh-repo').value = localStorage.getItem('xc_gh_repo') || 'xucenhe-backup';
@@ -384,14 +386,13 @@ window.openSettings = function() {
     
     document.getElementById('settings-overlay').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-}
+};
 
 window.closeSettings = function() {
     document.getElementById('settings-overlay').classList.add('hidden');
     document.body.style.overflow = '';
-}
+};
 
-// 保存配置到本地，免得每次输入
 function saveGhConfig(token, user, repo, path) {
     localStorage.setItem('xc_gh_token', token);
     localStorage.setItem('xc_gh_user', user);
@@ -399,7 +400,6 @@ function saveGhConfig(token, user, repo, path) {
     localStorage.setItem('xc_gh_path', path);
 }
 
-// 备份到 GitHub
 window.syncToGithub = async function() {
     const token = document.getElementById('gh-token').value.trim();
     const user = document.getElementById('gh-username').value.trim();
@@ -421,7 +421,6 @@ window.syncToGithub = async function() {
         }
 
         const backupData = { categories: categoryList, apis: apiList, exportDate: new Date().toLocaleString() };
-        // 解决 Base64 编码中文报错
         const base64Content = btoa(unescape(encodeURIComponent(JSON.stringify(backupData, null, 2))));
         
         const body = { message: "Backup from 叙岑盒", content: base64Content };
@@ -430,7 +429,7 @@ window.syncToGithub = async function() {
         const putRes = await fetch(url, { method: "PUT", headers: headers, body: JSON.stringify(body) });
 
         if (putRes.ok) {
-            alert("成功备份到 GitHub 仓库啦！/ᐠ  ⁃͈ 𖥦 ⁃͈ マ ੭");
+            alert("成功备份到 GitHub 仓库！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
         } else {
             const errData = await putRes.json();
             alert(`备份失败: ${errData.message}`);
@@ -439,9 +438,8 @@ window.syncToGithub = async function() {
         console.error(err);
         alert("网络错误，无法连接到 GitHub API");
     }
-}
+};
 
-// 从 GitHub 恢复
 window.syncFromGithub = async function() {
     const token = document.getElementById('gh-token').value.trim();
     const user = document.getElementById('gh-username').value.trim();
@@ -466,7 +464,7 @@ window.syncFromGithub = async function() {
         const parsedData = JSON.parse(jsonStr);
 
         if (parsedData.categories && parsedData.apis) {
-            if (confirm("云端数据读取成功！要覆盖本地数据吗？（原有数据将被替换噢！想清楚呀宝宝）")) {
+            if (confirm("读取成功！要覆盖本地数据吗？（原有数据将被替换）")) {
                 localStorage.setItem('softboxCategoryStore', JSON.stringify(parsedData.categories));
                 localStorage.setItem('softboxApiStore', JSON.stringify(parsedData.apis));
                 alert("云端数据恢复成功啦！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
@@ -477,11 +475,10 @@ window.syncFromGithub = async function() {
         }
     } catch (err) {
         console.error(err);
-        alert("解析云端数据失败，请确认文件内容正确");
+        alert("解析失败，请确认文件内容");
     }
-}
+};
 
-// 本地文件导出
 window.exportData = function() {
     const backupData = { categories: categoryList, apis: apiList, exportDate: new Date().toLocaleString() };
     const dataStr = JSON.stringify(backupData, null, 2);
@@ -495,10 +492,10 @@ window.exportData = function() {
     a.click();
     URL.revokeObjectURL(url);
     closeSettings();
-}
+};
 
-// 本地文件导入
-window.triggerImport = function() { document.getElementById('import-file').click(); }
+window.triggerImport = function() { document.getElementById('import-file').click(); };
+
 window.importData = function(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -509,44 +506,48 @@ window.importData = function(event) {
             if (data.categories && data.apis) {
                 localStorage.setItem('softboxCategoryStore', JSON.stringify(data.categories));
                 localStorage.setItem('softboxApiStore', JSON.stringify(data.apis));
-                alert("本地数据恢复成功啦！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
+                alert("恢复成功啦！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
                 location.reload(); 
             } else {
-                alert("这个文件好像不是叙岑盒的备份文件呀＞ᨓ＜");
+                alert("文件格式不对喔~");
             }
         } catch (err) {
-            alert("读取失败了，备份文件可能损坏了耶߹꒳߹");
+            alert("读取失败了~");
         }
     };
     reader.readAsText(file);
     event.target.value = ''; 
-}
+};
 
-// 🚀 启动与绑定事件监听
-function initApp() {
+// ==========================================
+// 🚀 初始化与事件绑定
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
     loadDataFromStorage();
     
-    document.getElementById('add-btn').onclick = () => {
+    document.getElementById('add-btn').addEventListener('click', () => {
         document.querySelectorAll('#api-category-list .multi-cat-tag').forEach(el => el.classList.remove('active'));
         document.getElementById('modal-overlay').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
-    };
+    });
     
-    document.getElementById('cancel-btn').onclick = () => {
+    document.getElementById('cancel-btn').addEventListener('click', () => {
         document.getElementById('modal-overlay').classList.add('hidden');
         document.getElementById('api-form').reset();
         document.body.style.overflow = '';
-    };
-
-    const overlays = ['modal-overlay', 'detail-modal-overlay', 'settings-overlay'];
-    overlays.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('click', (e) => {
-            if (e.target === el) { el.classList.add('hidden'); document.body.style.overflow = ''; }
-        });
     });
 
-    document.getElementById('api-form').onsubmit = (e) => {
+    const overlays = ['modal-overlay', 'detail-modal-overlay'];
+    overlays.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('click', (e) => {
+                if (e.target === el) { el.classList.add('hidden'); document.body.style.overflow = ''; }
+            });
+        }
+    });
+
+    document.getElementById('api-form').addEventListener('submit', (e) => {
         e.preventDefault();
         const activeEls = document.querySelectorAll('#api-category-list .active');
         apiList.push({
@@ -563,18 +564,18 @@ function initApp() {
         document.getElementById('modal-overlay').classList.add('hidden');
         e.target.reset();
         document.body.style.overflow = '';
-    };
+    });
 
-    // 绑定标题触发事件 (电脑右键打开，手机长按打开)
+    // 核心修改点：绑定大标题触发事件（右键/长按）
     const mainTitle = document.getElementById('main-title');
     if (mainTitle) {
-        // 电脑端：右键打开设置
+        // 电脑端：右键打开
         mainTitle.addEventListener('contextmenu', (e) => {
-            e.preventDefault(); // 阻止浏览器默认的右键菜单
+            e.preventDefault();
             openSettings();
         });
 
-        // 手机端：长按打开设置
+        // 手机端：长按打开
         let pressTimer;
         const startPress = () => { 
             pressTimer = setTimeout(() => { 
@@ -588,14 +589,8 @@ function initApp() {
         mainTitle.addEventListener('touchend', cancelPress);
         mainTitle.addEventListener('touchcancel', cancelPress);
         mainTitle.addEventListener('touchmove', cancelPress);
-        
-        // 双击保险机制（双端均可使用）
-        mainTitle.addEventListener('dblclick', openSettings);
     }
     
     renderCategories();
     renderAPIs();
-}
-
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
-else initApp();
+});

@@ -9,31 +9,24 @@
 <body>
     <header>
         <div class="title-wrapper">
-            <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;">叙岑盒</h1>
+            <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;" title="电脑右键 / 手机长按进入设置">叙岑盒</h1>
             <span class="subtitle">My API Collection</span>
         </div>
     </header>
 
-    <!-- 分类栏 & 合二为一的管理按钮 -->
     <div class="category-bar">
-        <div class="category-tabs" id="category-tabs">
-            <!-- JS 动态生成标签 -->
-        </div>
+        <div class="category-tabs" id="category-tabs"></div>
         <div class="cat-actions">
             <button class="manage-cat-btn hand-drawn-border" onclick="openManageMenu()">管理 ⊞</button>
         </div>
     </div>
 
     <main>
-        <div id="api-container" class="api-grid">
-            <!-- API 卡片会通过 JS 生成在这里 -->
-        </div>
+        <div id="api-container" class="api-grid"></div>
     </main>
 
-    <!-- 悬浮添加按钮 -->
     <button id="add-btn" class="fab">+</button>
 
-    <!-- 批量操作底栏 (新增了上移和下移) -->
     <div id="batch-action-bar" class="bottom-action-sheet hidden">
         <div class="action-item" onclick="moveUp()">
             <div class="action-icon icon-purple">↑</div>
@@ -61,17 +54,15 @@
         </div>
     </div>
 
-    <!-- 管理选项弹窗 -->
     <div id="manage-menu-overlay" class="hidden">
         <div class="modal hand-drawn-border manage-menu-modal">
             <h2 style="margin-bottom: 10px; font-size: 1.2rem;">要管理什么呢 ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა</h2>
             <button onclick="toggleBatchMode(); closeManageMenu()" class="macaron-btn btn-blue menu-btn">批量管理卡片 ⊞</button>
             <button onclick="openCategoryManage(); closeManageMenu()" class="macaron-btn btn-pink menu-btn">添加/删除分类 ✎</button>
-            <button onclick="closeManageMenu()" class="macaron-btn btn-disabled menu-btn">取消</button>
+            <button onclick="closeManageMenu()" class="macaron-btn btn-disabled menu-btn">取消 ✖</button>
         </div>
     </div>
 
-    <!-- 批量追加分类的弹窗 (改成了多选标签) -->
     <div id="batch-move-overlay" class="hidden">
         <div class="modal hand-drawn-border" style="text-align: center;">
             <div class="tape top-center"></div>
@@ -85,7 +76,6 @@
         </div>
     </div>
 
-    <!-- 活页笔记本样式的详情弹窗 -->
     <div id="detail-modal-overlay" class="hidden">
         <div class="notebook-paper" id="detail-paper">
             <div class="binding-holes">
@@ -121,7 +111,6 @@
         </div>
     </div>
 
-    <!-- 添加API的弹窗 -->
     <div id="modal-overlay" class="hidden">
         <div class="modal hand-drawn-border">
             <div class="tape top-center"></div>
@@ -155,17 +144,28 @@
         </div>
     </div>
 
-    <!-- 全新设计的设置与云备份面板 (现代极简风，无胶带，无Emoji) -->
+    <!-- 现代极简风设置面板 (无胶带，无Emoji) -->
     <div id="settings-overlay" class="hidden" onclick="if(event.target===this)closeSettings()">
         <div class="settings-panel">
-            <!-- 固定头部 -->
             <div class="settings-header">
                 <h2>设置与备份</h2>
                 <button type="button" class="close-icon-btn" onclick="closeSettings()" title="关闭">✖</button>
             </div>
             
-            <!-- 可滚动的内部主体 -->
             <div class="settings-body">
+                <div class="settings-section">
+                    <h3>❖ 外观主题</h3>
+                    <p class="settings-tip">选择你喜欢的色彩风格，自动保存</p>
+                    <div class="input-group">
+                        <select id="theme-selector" class="hand-drawn-select" onchange="changeTheme(this.value)">
+                            <option value="default">紫点便笺 (默认)</option>
+                            <option value="subi">素笔闲抄</option>
+                            <option value="tingyu">檐下听雨</option>
+                            <option value="baiyu">白隅清章</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="settings-section">
                     <h3>❖ GitHub 云端同步</h3>
                     <p class="settings-tip">填写 Token 即可直接与 GitHub 仓库同步数据</p>
@@ -174,20 +174,20 @@
                         <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
                     </div>
                     <div class="input-group">
-                        <label>用户名</label>
+                        <label>用户名 (Username)</label>
                         <input type="text" id="gh-username" placeholder="你的 GitHub 用户名">
                     </div>
                     <div class="input-group">
-                        <label>仓库名</label>
+                        <label>仓库名 (Repository)</label>
                         <input type="text" id="gh-repo" value="xucenhe-backup">
                     </div>
                     <div class="input-group">
-                        <label>文件名</label>
+                        <label>文件名 (File Path)</label>
                         <input type="text" id="gh-path" value="xucenhe_backup.json">
                     </div>
                     <div class="settings-actions">
-                        <button type="button" onclick="syncToGithub()" class="macaron-btn btn-blue">⭳ 备份到云端</button>
-                        <button type="button" onclick="syncFromGithub()" class="macaron-btn btn-yellow">⭱ 从云端恢复</button>
+                        <button type="button" onclick="syncToGithub()" class="macaron-btn btn-blue">↑ 备份到云端</button>
+                        <button type="button" onclick="syncFromGithub()" class="macaron-btn btn-yellow">↓ 从云端恢复</button>
                     </div>
                 </div>
 
@@ -195,9 +195,8 @@
                     <h3>❖ 本地文件备份</h3>
                     <p class="settings-tip">下载文件保存，或读取本地文件恢复</p>
                     <div class="settings-actions">
-                        <button type="button" onclick="exportData()" class="macaron-btn btn-green">⭳ 导出备份文件</button>
-                        <button type="button" onclick="triggerImport()" class="macaron-btn btn-pink">⭱ 导入备份文件</button>
-                        <!-- 隐藏的文件选择器 -->
+                        <button type="button" onclick="exportData()" class="macaron-btn btn-green">↑ 导出备份文件</button>
+                        <button type="button" onclick="triggerImport()" class="macaron-btn btn-pink">↓ 导入备份文件</button>
                         <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
                     </div>
                 </div>

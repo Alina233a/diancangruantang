@@ -907,15 +907,13 @@ h1 {
 .settings-actions { display: flex; gap: 10px; margin-top: 20px; }
 .settings-actions button { padding: 12px 0; font-size: 0.95rem; }
 
-/* ================= 动态边框与阴影调整 (自动适配素笔风格) ================= */
+/* ================= 动态边框与全局阴影自适应 ================= */
 .hand-drawn-border, .macaron-btn, .notebook-paper, .action-icon, .tape, .multi-cat-tag, .hand-drawn-select, .input-group input, .sticker-btn, .model-item {
     border-width: var(--border-width, 2px) !important;
 }
 .api-card h3, .settings-header, .settings-section, .flip-actions {
     border-bottom-width: var(--border-width, 2px) !important;
 }
-
-/* 全局统一调整阴影大小，使其变得紧凑扁平 */
 .api-card, .fab, .modal, .notebook-paper, .sticker-btn, .manage-menu-modal, .settings-panel {
     box-shadow: var(--shadow-size, 4px) var(--shadow-size, 4px) 0px var(--main-pink) !important;
 }
@@ -923,7 +921,61 @@ h1 {
     box-shadow: calc(var(--shadow-size, 4px) + 2px) calc(var(--shadow-size, 4px) + 2px) 0px var(--main-pink) !important;
 }
 
-/* 素笔闲抄专属：标题底色去掉粉色渐变，改为低饱和米黄底色 */
+/* ================= 针对【素笔闲抄】的 UI 彻底重塑 (屏蔽胶带/打孔/扭曲边框) ================= */
+
+/* 1. 彻底干掉卡片胶带和活页本打孔 */
+[data-theme="subi"] .tape,
+[data-theme="subi"] .binding-holes {
+    display: none !important;
+}
+
+/* 2. 详情页（原活页本）去除横线，恢复干净的纯色底板，修正左侧留白 */
+[data-theme="subi"] .notebook-paper {
+    background-image: none !important;
+    padding: 30px 25px 25px 25px !important; /* 左边不打孔了，缩进恢复正常 */
+}
+[data-theme="subi"] .notebook-paper h2 {
+    background: transparent !important;
+    border-bottom: 1px dashed var(--main-pink);
+    padding-bottom: 5px; margin-bottom: 20px;
+}
+
+/* 3. 干掉所有扭曲的“手绘风”边框，统一改成现代手账的规整圆角 */
+[data-theme="subi"] .hand-drawn-border, 
+[data-theme="subi"] .macaron-btn, 
+[data-theme="subi"] .cat-tab, 
+[data-theme="subi"] .sticker-btn, 
+[data-theme="subi"] .input-group input, 
+[data-theme="subi"] .hand-drawn-select, 
+[data-theme="subi"] .multi-cat-tag,
+[data-theme="subi"] .card-category-tag,
+[data-theme="subi"] .api-card,
+[data-theme="subi"] .modal,
+[data-theme="subi"] .notebook-paper,
+[data-theme="subi"] .settings-panel {
+    border-radius: 6px !important; /* 统一的微圆角框 */
+    border-style: solid !important;
+}
+
+/* 4. 卡片排版微调 */
+[data-theme="subi"] .api-card {
+    padding-top: 20px !important; /* 没了胶带，顶部不再显得空荡 */
+}
+
+/* 5. 右下角悬浮添加按钮 (FAB) 从畸形圆变成精致的小圆角方块 */
+[data-theme="subi"] .fab {
+    border-radius: 12px !important;
+}
+
+/* 6. 模型小贴纸去除倾斜，变成规整的 Tag */
+[data-theme="subi"] .sticker-btn {
+    transform: none !important; /* 彻底端正 */
+}
+[data-theme="subi"] .sticker-btn:hover {
+    transform: scale(1.02) !important;
+}
+
+/* 7. 主标题底色去掉高亮渐变，改为低饱和底纹 */
 [data-theme="subi"] h1 {
     background: linear-gradient(to top, var(--macaron-yellow) 40%, transparent 40%);
 }

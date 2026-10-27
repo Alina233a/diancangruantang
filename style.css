@@ -1,4 +1,5 @@
 /* ================= 主题色彩变量 ================= */
+/* ================= 主题色彩与全局变量 ================= */
 :root {
     --bg-purple: #f8f5fc;      
     --dot-color: #e6daef;      
@@ -17,26 +18,42 @@
     --line-color: #ebdff2;
     --tag-bg: #f3e8fa;
     --overlay-bg: rgba(245, 240, 250, 0.85);
+
+    /* 新增：结构控制变量 (默认主题) */
+    --border-width: 2px;
+    --shadow-size: 4px;
+    --bg-pattern: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
+    --bg-size: 25px 25px;
 }
 
 [data-theme="subi"] {
-    --bg-purple: #f5f2eb;      
-    --dot-color: #e6e0d3;      
-    --main-purple: #a89f91;    
-    --dark-purple: #5c544d;    
-    --main-pink: #d1c8bb;      
-    --white: #fdfbf7;
-    --macaron-blue: #e8e4db;
-    --macaron-yellow: #f0ebe1;
-    --macaron-green: #e0dcd3;
-    --macaron-gray: #e6e0d3;
+    /* 主题2：素笔闲抄 (细铅笔/手绘排线/低饱和/干净扁平) */
+    --bg-purple: #f6f5ef;      /* 浅米白纸张底色 */
+    --dot-color: transparent;  /* 坚决去除圆点 */
+    --main-purple: #747168;    /* 细铅笔边框色 (偏灰暖棕) */
+    --dark-purple: #3a3834;    /* 深灰铅笔字色 */
+    --main-pink: #dedad0;      /* 阴影色 (极浅灰棕) */
+    --white: #fdfcf9;          /* 卡片背景 */
     
-    --tape-bg: rgba(209, 200, 187, 0.7);
-    --tape-border: rgba(168, 159, 145, 0.4);
-    --danger-color: #a68b7c;
-    --line-color: #e6e0d3;
-    --tag-bg: #f0ebe1;
-    --overlay-bg: rgba(244, 241, 234, 0.85);
+    /* 提取自参考图的低饱和色块 */
+    --macaron-blue: #cddbe2;   /* 浅灰蓝 */
+    --macaron-yellow: #eaddc0; /* 灰米黄 */
+    --macaron-green: #cad6c7;  /* 浅草绿 */
+    --macaron-gray: #e6e3dc;   /* 极浅灰 */
+    
+    --tape-bg: rgba(222, 218, 208, 0.6); 
+    --tape-border: rgba(116, 113, 104, 0.3);
+    --danger-color: #b88d8d;   /* 降噪后的砖粉色 */
+    --line-color: #ebe7de;     
+    --tag-bg: #eaddc0;
+    --overlay-bg: rgba(246, 245, 239, 0.85);
+
+    /* 【灵魂修改】：变成1px细线、缩小阴影、注入手绘排线肌理 */
+    --border-width: 1px; 
+    --shadow-size: 2px; 
+    --bg-pattern: repeating-linear-gradient(45deg, rgba(116,113,104,0.035) 0px, rgba(116,113,104,0.035) 1px, transparent 1px, transparent 6px), 
+                  repeating-linear-gradient(-45deg, rgba(116,113,104,0.025) 0px, rgba(116,113,104,0.025) 1px, transparent 1px, transparent 8px);
+    --bg-size: auto;
 }
 
 [data-theme="tingyu"] {
@@ -100,21 +117,15 @@ html {
 body {
     font-family: 'Comic Sans MS', 'Chalkboard SE', 'PingFang SC', sans-serif;
     color: var(--dark-purple);
-    margin: 0; 
-    
-    /* 恢复最基础的内边距，顶部留20px，左右20px，底部多留一点防止贴底 */
     padding: 5px 20px 40px; 
-    
-    /* 恢复基础高度计算 */
     min-height: 100vh;
-    
-    /* 背景直接老老实实画在 body 上 */
     background-color: var(--bg-purple);
-    background-image: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
-    background-size: 25px 25px;
+    /* 👇 重点改这三行 👇 */
+    background-image: var(--bg-pattern); 
+    background-size: var(--bg-size);     
+    transition: background 0.3s ease;    
+    /* 👆 重点改这三行 👆 */
     overflow-x: hidden;
-
-    transition: background-color 0.3s ease;
 }
 
 header {
@@ -895,3 +906,24 @@ h1 {
 .settings-tip { font-size: 0.75rem; color: var(--main-purple); margin-bottom: 15px; }
 .settings-actions { display: flex; gap: 10px; margin-top: 20px; }
 .settings-actions button { padding: 12px 0; font-size: 0.95rem; }
+
+/* ================= 动态边框与阴影调整 (自动适配素笔风格) ================= */
+.hand-drawn-border, .macaron-btn, .notebook-paper, .action-icon, .tape, .multi-cat-tag, .hand-drawn-select, .input-group input, .sticker-btn, .model-item {
+    border-width: var(--border-width, 2px) !important;
+}
+.api-card h3, .settings-header, .settings-section, .flip-actions {
+    border-bottom-width: var(--border-width, 2px) !important;
+}
+
+/* 全局统一调整阴影大小，使其变得紧凑扁平 */
+.api-card, .fab, .modal, .notebook-paper, .sticker-btn, .manage-menu-modal, .settings-panel {
+    box-shadow: var(--shadow-size, 4px) var(--shadow-size, 4px) 0px var(--main-pink) !important;
+}
+.api-card:hover, .sticker-btn:hover {
+    box-shadow: calc(var(--shadow-size, 4px) + 2px) calc(var(--shadow-size, 4px) + 2px) 0px var(--main-pink) !important;
+}
+
+/* 素笔闲抄专属：标题底色去掉粉色渐变，改为低饱和米黄底色 */
+[data-theme="subi"] h1 {
+    background: linear-gradient(to top, var(--macaron-yellow) 40%, transparent 40%);
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>典藏软盒</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="title-wrapper">
+            <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;">典藏软盒</h1>
+            <span class="subtitle">My API Collection</span>
+        </div>
+    </header>
+
+    <!-- 分类栏 & 合二为一的管理按钮 -->
+    <div class="category-bar">
+        <div class="category-tabs" id="category-tabs">
+            <!-- JS 动态生成标签 -->
+        </div>
+        <div class="cat-actions">
+            <button class="manage-cat-btn hand-drawn-border" onclick="openManageMenu()">管理 ⊞</button>
+        </div>
+    </div>
+
+    <main>
+        <div id="api-container" class="api-grid">
+            <!-- API 卡片会通过 JS 生成在这里 -->
+        </div>
+    </main>
+
+    <!-- 悬浮添加按钮 -->
+    <button id="add-btn" class="fab">+</button>
+
+    <!-- 批量操作底栏 (新增了上移和下移) -->
+    <div id="batch-action-bar" class="bottom-action-sheet hidden">
+        <div class="action-item" onclick="moveUp()">
+            <div class="action-icon icon-purple">↑</div>
+            <span class="text-purple">上移</span>
+        </div>
+        <div class="action-item" onclick="moveDown()">
+            <div class="action-icon icon-purple">↓</div>
+            <span class="text-purple">下移</span>
+        </div>
+        <div class="action-item" onclick="batchDelete()">
+            <div class="action-icon icon-pink">✖</div>
+            <span class="text-pink">删除</span>
+        </div>
+        <div class="action-item" onclick="showBatchMove()">
+            <div class="action-icon icon-purple">⤻</div>
+            <span class="text-purple">追加</span>
+        </div>
+        <div class="action-item count-item">
+            <div class="action-icon icon-purple-solid" id="batch-count-num">0</div>
+            <span class="text-purple">已选</span>
+        </div>
+        <div class="action-item" onclick="toggleBatchMode()">
+            <div class="action-icon icon-blue">⮌</div>
+            <span class="text-blue">退出</span>
+        </div>
+    </div>
+
+    <!-- 管理选项弹窗 -->
+    <div id="manage-menu-overlay" class="hidden">
+        <div class="modal hand-drawn-border manage-menu-modal">
+            <h2 style="margin-bottom: 10px; font-size: 1.2rem;">要管理什么呢 ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა</h2>
+            <button onclick="toggleBatchMode(); closeManageMenu()" class="macaron-btn btn-blue menu-btn">批量管理卡片 ⊞</button>
+            <button onclick="openCategoryManage(); closeManageMenu()" class="macaron-btn btn-pink menu-btn">添加/删除分类 ✎</button>
+            <button onclick="closeManageMenu()" class="macaron-btn btn-disabled menu-btn">取消</button>
+        </div>
+    </div>
+
+    <!-- 批量追加分类的弹窗 (改成了多选标签) -->
+    <div id="batch-move-overlay" class="hidden">
+        <div class="modal hand-drawn-border" style="text-align: center;">
+            <div class="tape top-center"></div>
+            <h2 style="margin-bottom: 10px; font-size: 1.2rem;">追加分类 ⤻</h2>
+            <p style="font-size: 0.8rem; color: var(--main-purple); margin-bottom: 15px;">(点击选中要追加的分类标签)</p>
+            <div id="batch-category-list" class="multi-cat-container"></div>
+            <div class="modal-actions">
+                <button onclick="closeBatchMove()" class="btn-cancel hand-drawn-border">取消</button>
+                <button onclick="batchMove()" class="btn-save hand-drawn-border">确定追加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 活页笔记本样式的详情弹窗 -->
+    <div id="detail-modal-overlay" class="hidden">
+        <div class="notebook-paper" id="detail-paper">
+            <div class="binding-holes">
+                <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+                <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            </div>
+            <div class="tape top-right"></div>
+            <button id="close-detail-btn" class="close-btn" onclick="editApiInfo()" title="修改信息">✎</button>
+            
+            <div id="page-1" class="page-wrapper">
+                <h2><span id="detail-name">API 名称</span></h2>
+                <div class="detail-content">
+                    <p><strong>URL：</strong><br><span class="box-text copyable" id="detail-url" onclick="copyText(event, this.innerText)" title="点击复制"></span></p>
+                    <p><strong>KEY：</strong><br><span class="box-text copyable" id="detail-key" onclick="copyText(event, this.innerText)" title="点击复制"></span></p>
+                    <p><strong>邀人链接：</strong><br><span class="box-text copyable" id="detail-share" onclick="copyText(event, this.innerText)" title="点击复制"></span></p>
+                </div>
+                <div class="flip-actions">
+                    <button class="flip-btn" onclick="flipPage(2)">下一页：模型 &gt;</button>
+                </div>
+            </div>
+
+            <div id="page-2" class="d-none page-wrapper">
+                <h2>添加模型</h2>
+                <div class="add-model-group">
+                    <input type="text" id="new-model-input" placeholder="输入模型名 (如gpt-4)">
+                    <button onclick="addModel()" class="sticker-btn btn-green">添加</button>
+                </div>
+                <div id="model-list" class="model-list"></div>
+                <div class="flip-actions">
+                    <button class="flip-btn" onclick="flipPage(1)">&lt; 上一页：详情</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加API的弹窗 -->
+    <div id="modal-overlay" class="hidden">
+        <div class="modal hand-drawn-border">
+            <div class="tape top-center"></div>
+            <h2>记录新的 API ✎</h2>
+            <form id="api-form">
+                <div class="input-group">
+                    <label for="api-name">API 名称</label>
+                    <input type="text" id="api-name" required placeholder="给它起个名字吧＞𐋣＜">
+                </div>
+                <div class="input-group">
+                    <label for="api-url">API URL</label>
+                    <input type="url" id="api-url" required placeholder="https://...">
+                </div>
+                <div class="input-group">
+                    <label for="api-key">API Key</label>
+                    <input type="text" id="api-key" placeholder="填写密钥 (选填)">
+                </div>
+                <div class="input-group">
+                    <label for="api-share">邀人链接</label>
+                    <input type="url" id="api-share" placeholder="邀请新人链接 (选填)">
+                </div>
+                <div class="input-group">
+                    <label>所属分类 (可多选)</label>
+                    <div id="api-category-list" class="multi-cat-container left-align"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-btn" class="btn-cancel hand-drawn-border">取消</button>
+                    <button type="submit" class="btn-save hand-drawn-border">保存入盒</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 隐藏彩蛋：长按标题呼出的备份恢复弹窗 -->
+    <div id="backup-modal-overlay" class="hidden">
+        <div class="modal hand-drawn-border" style="text-align: center;">
+            <div class="tape top-center"></div>
+            <h2 style="margin-bottom: 10px;">时光机 📦</h2>
+            <p style="font-size: 0.85rem; color: var(--main-purple); margin-bottom: 25px;">
+                定期备份你的宝藏数据喔！
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button onclick="exportData()" class="macaron-btn btn-green" style="padding: 12px; font-size: 1rem;">⬇️ 导出备份 (保存为文件)</button>
+                <button onclick="triggerImport()" class="macaron-btn btn-yellow" style="padding: 12px; font-size: 1rem;">⬆️ 导入备份 (恢复数据)</button>
+                <!-- 隐藏的文件选择器 -->
+                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+            </div>
+            <button onclick="closeBackupModal()" class="btn-cancel hand-drawn-border" style="margin-top: 25px; width: 100%; padding: 10px;">取消</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

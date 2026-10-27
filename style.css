@@ -1,0 +1,1549 @@
+/* ================= 主题色彩变量 ================= */
+/* ================= 主题色彩与全局变量 ================= */
+:root {
+    --bg-purple: #f8f5fc;      
+    --dot-color: #e6daef;      
+    --main-purple: #bca0dc;    
+    --dark-purple: #6c5b7b;    
+    --main-pink: #ffcce6;      
+    --white: #ffffff;
+    --macaron-blue: #bde0fe;
+    --macaron-yellow: #fcf6bd;
+    --macaron-green: #d8f3dc;
+    --macaron-gray: #f0f0f0;
+    
+    --tape-bg: rgba(255, 204, 230, 0.7);
+    --tape-border: rgba(179, 157, 219, 0.4);
+    --danger-color: #d9a5b3;
+    --line-color: #ebdff2;
+    --tag-bg: #f3e8fa;
+    --overlay-bg: rgba(245, 240, 250, 0.85);
+
+    /* 新增：结构控制变量 (默认主题) */
+    --border-width: 2px;
+    --shadow-size: 4px;
+    --bg-pattern: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
+    --bg-size: 25px 25px;
+}
+
+[data-theme="baiyu"] {
+    --bg-purple: #fcfcfc;      
+    --dot-color: #e0e0e0;      
+    --main-purple: #888888;    
+    --dark-purple: #222222;    
+    --main-pink: #cccccc;      
+    --white: #ffffff;
+    --macaron-blue: #eeeeee;
+    --macaron-yellow: #f5f5f5;
+    --macaron-green: #e5e5e5;
+    --macaron-gray: #e0e0e0;
+    
+    --tape-bg: rgba(204, 204, 204, 0.7);
+    --tape-border: rgba(136, 136, 136, 0.4);
+    --danger-color: #777777;
+    --line-color: #e0e0e0;
+    --tag-bg: #f5f5f5;
+    --overlay-bg: rgba(252, 252, 252, 0.85);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 1. 彻底解决 Chrome 顶部和 Safari 底部的背景空白 */
+html {
+    background-color: var(--bg-purple);
+    /* 强制填满高度，兼容旧版 iOS */
+    height: 100%;
+    min-height: 100vh;
+    /* 核心修复：苹果专属属性，完美自动扣除上下工具栏的高度 */
+    min-height: -webkit-fill-available;
+    overscroll-behavior: none; 
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'PingFang SC', sans-serif;
+    color: var(--dark-purple);
+    padding: 5px 20px 40px; 
+    min-height: 100vh;
+    background-color: var(--bg-purple);
+    /* 👇 重点改这三行 👇 */
+    background-image: var(--bg-pattern); 
+    background-size: var(--bg-size);     
+    transition: background 0.3s ease;    
+    /* 👆 重点改这三行 👆 */
+    overflow-x: hidden;
+}
+
+header {
+    text-align: center;
+    padding: 10px 0 15px; 
+    margin-bottom: 10px;
+}
+
+.title-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+h1 {
+    font-size: 2.2rem; 
+    color: var(--dark-purple);
+    letter-spacing: 2px;
+    background: linear-gradient(to top, var(--main-pink) 30%, transparent 30%);
+    display: inline-block;
+    padding: 0 10px;
+    
+    /* 新增这行，强制消除标题自带的顶部空隙 */
+    margin-top: 0; 
+}
+
+.subtitle {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--main-purple);
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.api-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+}
+
+.hand-drawn-border {
+    border: 2px solid var(--main-purple);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+}
+
+.api-card {
+    background: var(--white);
+    padding: 20px 15px 12px; 
+    position: relative;
+    word-break: break-all;
+    box-shadow: 4px 4px 0px var(--main-pink);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.api-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--main-pink);
+}
+
+.tape {
+    position: absolute; width: 60px; height: 18px;
+    background-color: var(--tape-bg);
+    border: 1px solid var(--tape-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); z-index: 2;
+}
+
+.tape.top-center {
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+}
+
+.tape.top-left {
+    top: -8px;
+    left: -8px;
+    transform: rotate(-45deg);
+}
+
+.api-card h3 {
+    margin-bottom: 10px; 
+    font-size: 1.1rem; 
+    border-bottom: 2px dashed var(--dot-color);
+    padding-bottom: 5px;
+    margin-right: 20px; 
+}
+
+.card-buttons {
+    display: flex;
+    gap: 6px;
+    margin-top: 5px;
+    justify-content: space-between;
+}
+
+.macaron-btn {
+    flex: 1;
+    padding: 4px 0; 
+    border: 1.5px solid var(--dark-purple);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    font-size: 0.75rem; 
+    font-weight: bold;
+    color: var(--dark-purple);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+    transition: transform 0.1s;
+    box-shadow: 2px 2px 0px var(--dot-color);
+}
+
+.macaron-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--dot-color);
+}
+
+.btn-blue { background: var(--macaron-blue); }
+.btn-yellow { background: var(--macaron-yellow); }
+.btn-green { background: var(--macaron-green); }
+.btn-disabled { 
+    background: var(--macaron-gray); 
+    color: #a0a0a0; 
+    border-color: #d0d0d0;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.delete-btn {
+    position: absolute; top: 10px; right: 12px; background: none; border: none;
+    color: var(--danger-color); font-size: 1.1rem; cursor: pointer;
+    font-family: 'Comic Sans MS', sans-serif; z-index: 10;
+}
+
+.delete-btn:hover {
+    color: #c97a8e;
+    font-weight: bold;
+    transform: scale(1.1);
+}
+
+.fab {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50% 40% 50% 40% / 40% 50% 40% 50%;
+    background-color: var(--main-purple);
+    border: 2px solid var(--dark-purple);
+    box-shadow: 4px 4px 0px var(--main-pink);
+    color: var(--white);
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 100;
+}
+
+.fab:hover {
+    transform: scale(1.05) rotate(10deg);
+}
+
+/* 核心修复：彻底隐藏元素，不占空间 */
+.d-none {
+    display: none !important;
+}
+
+#modal-overlay, #detail-modal-overlay, #manage-menu-overlay, #batch-move-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--overlay-bg); display: flex;
+    justify-content: center; align-items: center; z-index: 200;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+
+.modal {
+    background: var(--white);
+    padding: 35px 30px 30px;
+    width: 90%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 8px 8px 0px var(--main-pink);
+}
+
+.notebook-paper {
+    background: var(--white); padding: 35px 25px 25px 48px; width: 90%; max-width: 400px;
+    position: relative; border-radius: 5px 15px 15px 5px; box-shadow: 6px 6px 0px var(--main-pink);
+    border: 2px solid var(--main-purple);
+    background-image: repeating-linear-gradient(transparent, transparent 38px, var(--line-color) 38px, var(--line-color) 40px);
+    background-position: 0 45px;
+}
+
+.binding-holes {
+    position: absolute;
+    left: 10px;
+    top: 30px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hole {
+    width: 14px;
+    height: 14px;
+    background: rgba(245, 240, 250, 0.8);
+    border-radius: 50%;
+    border: 2px solid var(--main-purple);
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.tape.top-right {
+    top: -12px;
+    right: 20px;
+    transform: rotate(6deg);
+}
+
+.notebook-paper h2 {
+    color: var(--dark-purple);
+    font-size: 1.4rem;
+    margin-bottom: 12px; /* 【修改点】原来是25px，现在改成12px */
+    display: inline-block;
+    background: #fcfbfa; 
+    padding-right: 10px;
+}
+
+.detail-content p {
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+    line-height: 1.6;
+    background: rgba(252, 251, 250, 0.8);
+    border-radius: 5px;
+}
+
+.detail-content strong {
+    color: var(--dark-purple);
+}
+
+.box-text {
+    display: inline-block;
+    color: var(--main-purple);
+    word-break: break-all;
+    margin-top: 4px;
+    font-weight: bold;
+    font-family: inherit;
+}
+
+.copyable {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.copyable:hover {
+    color: var(--main-pink);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--main-purple);
+    font-size: 1.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--main-pink);
+}
+
+.flip-actions {
+    margin-top: auto; /* 核心技巧：把翻页按钮永远挤到本子的最底部 */
+    text-align: right;
+    border-top: 2px dashed var(--dot-color);
+    padding-top: 15px;
+}
+
+.flip-btn {
+    background: var(--white);
+    border: 2px solid var(--main-purple);
+    border-radius: 15px 5px 15px 5px;
+    padding: 6px 12px;
+    color: var(--dark-purple);
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px var(--dot-color);
+    transition: all 0.2s;
+}
+
+.flip-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--main-pink);
+}
+
+/* 第二页模型样式：小贴纸风格按钮 */
+.sticker-btn {
+    border: 2px dashed var(--main-purple);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px;
+    padding: 6px 12px;
+    color: var(--dark-purple);
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--main-pink);
+    transition: all 0.2s;
+    transform: rotate(-2deg); /* 微微倾斜看起来像贴上去的 */
+}
+
+.sticker-btn:hover {
+    transform: rotate(2deg) scale(1.05);
+    box-shadow: 4px 4px 0px var(--main-pink);
+}
+
+.sticker-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.add-model-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px; /* 【修改点】把输入框和下面列表的距离也稍微收紧一点 */
+}
+
+.add-model-group input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 2px solid var(--dot-color);
+    border-radius: 5px;
+    outline: none;
+    font-family: inherit;
+    background: #fff;
+    color: var(--dark-purple);
+}
+
+.add-model-group input:focus {
+    border-color: var(--main-purple);
+}
+
+.model-list {
+    flex: 1;
+    overflow-y: auto;
+    
+    /* 核心修复 5：iOS 的专属 Bug，必须加上这句，内部滑动条才会真正生效！ */
+    min-height: 0; 
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-right: 5px;
+}
+
+.model-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px dashed var(--main-purple);
+}
+
+.model-item-name {
+    font-weight: bold;
+    color: var(--dark-purple);
+    word-break: break-all;
+    margin-right: 10px;
+    font-size: 0.95rem;
+}
+
+.model-actions-btn {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.model-delete-btn {
+    background: none;
+    border: none;
+    color: #d9a5b3;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.modal h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.3rem;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--dot-color);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px;
+    outline: none;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--dark-purple);
+    background-color: #fdfcfd;
+}
+
+.input-group input:focus {
+    border-color: var(--main-purple);
+    background-color: var(--white);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: bold;
+    font-family: inherit;
+    width: 45%;
+    transition: transform 0.1s;
+}
+
+.modal-actions button:active {
+    transform: translate(2px, 2px);
+    box-shadow: none !important;
+}
+
+.btn-cancel {
+    background: var(--white);
+    color: var(--dark-purple);
+    box-shadow: 3px 3px 0px var(--dot-color);
+}
+
+.btn-save {
+    background: var(--main-pink);
+    color: var(--dark-purple);
+    box-shadow: 3px 3px 0px var(--main-purple);
+}
+
+@media (max-width: 600px) {
+    .fab { bottom: 25px; right: 25px; }
+}
+
+.page-wrapper {
+    height: 370px; 
+    display: flex;
+    flex-direction: column;
+    /* 核心修复 4：强制锁死弹窗高度，绝不允许里面的内容撑高整个页面 */
+    overflow: hidden; 
+}
+
+/* 给模型列表的滑动条加上可爱的粉色样式 */
+.model-list::-webkit-scrollbar {
+    width: 6px;
+}
+.model-list::-webkit-scrollbar-thumb {
+    background-color: var(--main-pink);
+    border-radius: 10px;
+}
+.model-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.detail-content {
+    flex: 1; 
+}
+
+.copy-icon-btn {
+    padding: 2px 8px; /* 上下边距缩小 */
+    font-size: 1.1rem; /* 符号稍微调大一点点 */
+    line-height: 1.2;
+    font-weight: normal; 
+}
+
+.category-bar {
+    max-width: 1100px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cat-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.category-tabs {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    scrollbar-width: none; /* 隐藏滚动条 Firefox */
+}
+
+.category-tabs::-webkit-scrollbar {
+    display: none; /* 隐藏滚动条 Chrome/Safari */
+}
+
+.cat-tab {
+    white-space: nowrap;
+    padding: 6px 16px;
+    background: transparent;
+    border: 2px dashed var(--main-purple);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    color: var(--dark-purple);
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.cat-tab.active, .cat-tab:hover {
+    background: var(--main-pink);
+    border-style: solid;
+    box-shadow: 2px 2px 0px var(--main-purple);
+    transform: translate(-1px, -1px);
+}
+
+.manage-cat-btn {
+    white-space: nowrap;
+    padding: 6px 12px;
+    background: var(--macaron-blue);
+    color: var(--dark-purple);
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 2px 2px 0px var(--main-purple);
+}
+
+.manage-cat-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.hand-drawn-select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--dot-color);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px;
+    outline: none;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--dark-purple);
+    background-color: #fdfcfd;
+    appearance: none; /* 移除默认箭头 */
+}
+
+.hand-drawn-select:focus {
+    border-color: var(--main-purple);
+    background-color: var(--white);
+}
+
+/* 补充一个粉色按钮通用类 */
+.btn-pink { background: var(--main-pink); }
+
+/* ================= 整合菜单弹窗 ================= */
+.manage-menu-modal {
+    display: flex; flex-direction: column; gap: 15px; 
+    width: 80%; max-width: 300px; padding: 25px 20px;
+    text-align: center;
+}
+
+.menu-btn { 
+    padding: 12px; font-size: 1rem; 
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px; 
+}
+
+/* ================= 仿图二底部操作栏 ================= */
+.bottom-action-sheet {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: var(--bg-purple); border-top: 2px solid var(--dot-color);
+    box-shadow: 0 -4px 15px rgba(188, 160, 220, 0.25);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 15px 10px 25px; z-index: 150;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(100%);
+}
+
+.bottom-action-sheet:not(.hidden) { transform: translateY(0); }
+.bottom-action-sheet.hidden { display: flex; }
+
+.action-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold; flex: 1;
+}
+
+.action-icon {
+    font-size: 1.4rem; width: 42px; height: 42px;
+    display: flex; justify-content: center; align-items: center;
+    border: 2px solid; border-radius: 12px 6px 12px 6px / 6px 12px 6px 12px;
+    background: var(--white); transition: transform 0.1s;
+}
+
+.action-item:active .action-icon { transform: scale(0.9); }
+.count-item { cursor: default; }
+.count-item .action-icon { font-family: 'Comic Sans MS', sans-serif; font-size: 1.2rem; }
+
+/* 严格遵循色彩层级：紫主、粉副、蓝收尾 */
+.icon-purple { color: var(--main-purple); border-color: var(--main-purple); }
+.text-purple { color: var(--main-purple); }
+.icon-purple-solid { color: var(--white); border-color: var(--main-purple); background: var(--main-purple); }
+.icon-pink { color: #d9a5b3; border-color: #d9a5b3; }
+.text-pink { color: #d9a5b3; }
+.icon-blue { color: #8faadc; border-color: #8faadc; }
+.text-blue { color: #8faadc; }
+
+/* ================= 卡片选中特效 ================= */
+.api-card.selected {
+    border: 3px dashed var(--main-purple); background-color: #fdfafc;
+    transform: scale(0.96); box-shadow: 0 0 10px rgba(188, 160, 220, 0.5);
+}
+
+.api-card.selected::after {
+    content: "✓"; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); font-size: 5rem;
+    color: var(--main-purple); opacity: 0.25; pointer-events: none;
+    font-weight: bold; font-family: 'Comic Sans MS', sans-serif;
+}
+
+/* ================= 卡片上的分类小标签 ================= */
+.card-category-tag {
+    font-size: 0.7rem; color: var(--dark-purple); background: var(--tag-bg);
+    padding: 2px 6px; border: 1px dashed var(--main-purple);
+    border-radius: 2px 8px 2px 8px / 8px 2px 8px 2px; margin-left: 6px; vertical-align: middle; display: inline-block;
+}
+
+/* ================= 修正管理按钮高度与分类标签完全一致 ================= */
+.manage-cat-btn {
+    /* 如果你想自己改高度，调整这里的 6px (上下) 和 12px (左右) 即可 */
+    padding: 6px 12px !important; 
+    display: flex;
+    align-items: center;
+    height: max-content;
+    margin-bottom: 5px; /* 抵消左侧分类滑轨带来的底边距 */
+}
+
+/* ================= 多选标签容器 ================= */
+.multi-cat-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; justify-content: center; }
+.multi-cat-container.left-align { justify-content: flex-start; margin-bottom: 0; }
+.multi-cat-tag {
+    padding: 4px 10px; border: 2px dashed var(--main-purple); border-radius: 15px;
+    font-size: 0.85rem; cursor: pointer; color: var(--dark-purple); transition: all 0.2s; background: var(--white);
+}
+.multi-cat-tag.active { background: var(--main-pink); border-style: solid; box-shadow: 2px 2px 0px var(--main-purple); transform: translate(-1px, -1px); font-weight: bold; }
+
+/* ================= 全新设置面板 (分离式滚动，无胶带设计) ================= */
+#settings-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(245, 240, 250, 0.85); display: flex;
+    justify-content: center; align-items: center; z-index: 250;
+}
+
+.settings-panel {
+    background: var(--white);
+    width: 90%;
+    max-width: 420px;
+    height: 80vh; /* 固定高度占比，确保不会撑爆屏幕 */
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(188, 160, 220, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 切割圆角内部内容 */
+    border: 1px solid rgba(188, 160, 220, 0.4);
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: #fdfbfd;
+    border-bottom: 2px dashed var(--dot-color);
+    flex-shrink: 0; /* 绝对禁止头部被挤压 */
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--dark-purple);
+}
+
+.close-icon-btn {
+    background: none; border: none; font-size: 1.3rem;
+    color: var(--main-purple); cursor: pointer; transition: color 0.2s;
+}
+
+.close-icon-btn:hover { color: var(--main-pink); }
+
+.settings-body {
+    padding: 25px 25px 40px;
+    overflow-y: auto; /* 核心：让这里自己独立滚动 */
+    flex: 1;
+}
+
+.settings-body::-webkit-scrollbar { width: 6px; }
+.settings-body::-webkit-scrollbar-thumb { background-color: var(--main-pink); border-radius: 10px; }
+
+.settings-section {
+    margin-bottom: 30px;
+}
+.settings-section:last-child { margin-bottom: 0; }
+
+.settings-section h3 {
+    color: var(--dark-purple); font-size: 1.05rem; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+}
+.settings-tip { font-size: 0.75rem; color: var(--main-purple); margin-bottom: 15px; }
+
+.settings-actions { display: flex; gap: 10px; margin-top: 20px; }
+.settings-actions button { padding: 12px 0; font-size: 0.95rem; }
+
+/* ================= 主题下拉框 ================= */
+.hand-drawn-select {
+    width: 100%; padding: 10px 15px; border: 2px solid var(--dot-color);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px; outline: none;
+    font-size: 0.95rem; font-family: inherit; color: var(--dark-purple);
+    background-color: var(--white); cursor: pointer;
+}
+.hand-drawn-select:focus { border-color: var(--main-purple); }
+
+/* ================= 现代极简设置面板 ================= */
+#settings-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--overlay-bg); display: flex;
+    justify-content: center; align-items: center; z-index: 250;
+}
+
+.settings-panel {
+    background: var(--white); width: 90%; max-width: 420px;
+    height: 80vh; 
+    border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    display: flex; flex-direction: column; overflow: hidden; 
+    border: 1px solid var(--dot-color);
+}
+
+.settings-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 25px; background: var(--white); border-bottom: 2px dashed var(--dot-color); flex-shrink: 0;
+}
+.settings-header h2 { margin: 0; font-size: 1.25rem; color: var(--dark-purple); }
+.close-icon-btn { background: none; border: none; font-size: 1.3rem; color: var(--main-purple); cursor: pointer; }
+.close-icon-btn:hover { color: var(--main-pink); }
+
+.settings-body { padding: 25px 25px 40px; overflow-y: auto; flex: 1; background: var(--white); }
+.settings-body::-webkit-scrollbar { width: 6px; }
+.settings-body::-webkit-scrollbar-thumb { background-color: var(--main-pink); border-radius: 10px; }
+
+.settings-section { margin-bottom: 30px; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-section h3 { color: var(--dark-purple); font-size: 1.05rem; margin-bottom: 8px; }
+.settings-tip { font-size: 0.75rem; color: var(--main-purple); margin-bottom: 15px; }
+.settings-actions { display: flex; gap: 10px; margin-top: 20px; }
+.settings-actions button { padding: 12px 0; font-size: 0.95rem; }
+
+/* ================= 动态边框与全局阴影自适应 ================= */
+.hand-drawn-border, .macaron-btn, .notebook-paper, .action-icon, .tape, .multi-cat-tag, .hand-drawn-select, .input-group input, .sticker-btn, .model-item {
+    border-width: var(--border-width, 2px) !important;
+}
+.api-card h3, .settings-header, .settings-section, .flip-actions {
+    border-bottom-width: var(--border-width, 2px) !important;
+}
+.api-card, .fab, .modal, .notebook-paper, .sticker-btn, .manage-menu-modal, .settings-panel {
+    box-shadow: var(--shadow-size, 4px) var(--shadow-size, 4px) 0px var(--main-pink) !important;
+}
+.api-card:hover, .sticker-btn:hover {
+    box-shadow: calc(var(--shadow-size, 4px) + 2px) calc(var(--shadow-size, 4px) + 2px) 0px var(--main-pink) !important;
+}
+
+/* ==================================================================== */
+/* ❖ 主题 2：素笔闲抄 (清晰文字 + 双线素描框 + 完整详情页排版) */
+/* ==================================================================== */
+
+[data-theme="subi"] {
+    --bg-purple: #f6f3ec;      /* 暖调米白画纸色 */
+    --dot-color: transparent;
+    --main-purple: #5c574f;    /* 铅笔深灰褐色 */
+    --dark-purple: #383530;    /* 浓郁字色 */
+    --white: #fffdf8;          /* 卡片温暖米白底色 */
+
+    /* 柔和手账色块 */
+    --macaron-green: #d8e5d0;  /* 行程绿 */
+    --macaron-yellow: #f6df9e; /* 暖杏黄 */
+    --macaron-blue: #dce9ef;   /* 浅冰蓝 */
+    --macaron-gray: #ebe7df;
+
+    --main-pink: transparent;  /* 无硬阴影 */
+    --danger-color: #c96a5b;   
+    --line-color: #e2ddd3;
+    --tag-bg: #d8e5d0;
+    --overlay-bg: rgba(246, 243, 236, 0.85);
+}
+
+/* 1. 全局画纸背景：温润米白 + 极淡手绘排线底纹 */
+[data-theme="subi"] body {
+    background-color: #f6f3ec !important;
+    background-image: 
+        repeating-linear-gradient(-35deg, rgba(92, 87, 79, 0.022) 0px, rgba(92, 87, 79, 0.022) 1.5px, transparent 1.5px, transparent 9px),
+        repeating-linear-gradient(55deg, rgba(92, 87, 79, 0.012) 0px, rgba(92, 87, 79, 0.012) 1px, transparent 1px, transparent 14px) !important;
+    background-size: auto !important;
+}
+
+/* 2. 隐藏默认胶带和打孔 */
+[data-theme="subi"] .tape,
+[data-theme="subi"] .binding-holes {
+    display: none !important;
+}
+
+/* 3. 大标题：严格保持原有的上下居中格式，绝不改排序！ */
+[data-theme="subi"] .title-wrapper {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+[data-theme="subi"] h1 {
+    background: linear-gradient(to top, rgba(246, 223, 158, 0.75) 35%, transparent 35%) !important;
+    color: #383530 !important;
+}
+[data-theme="subi"] .subtitle {
+    display: block !important; /* 保持在标题正下方 */
+    background: transparent !important;
+    color: #7a7368 !important;
+    margin-top: 5px !important;
+    padding: 0 !important;
+}
+
+/* 4. 分类导航栏：修复电脑端边框显示不全的问题 */
+[data-theme="subi"] .category-tabs {
+    padding: 4px 4px 8px 4px !important; /* 留出呼吸空间，防止左右上边框被切掉 */
+}
+[data-theme="subi"] .cat-tab {
+    border-radius: 6px !important;
+    border: 1.5px solid #5c574f !important;
+    background-color: #fffdf8 !important;
+    padding: 6px 16px !important;
+    box-shadow: inset 0 0 0 1.5px #fffdf8, inset 0 0 0 2.5px rgba(92, 87, 79, 0.2), 0 2px 4px rgba(92, 87, 79, 0.06) !important;
+}
+[data-theme="subi"] .cat-tab.active,
+[data-theme="subi"] .cat-tab:hover {
+    background-color: #d8e5d0 !important;
+    background-image: repeating-linear-gradient(
+        -35deg,
+        rgba(255, 255, 255, 0.4) 0px,
+        rgba(255, 255, 255, 0.4) 4px,
+        transparent 4px,
+        transparent 10px
+    ) !important;
+    color: #2f3e2b !important;
+    transform: translateY(-1px) !important;
+}
+[data-theme="subi"] .manage-cat-btn {
+    border-radius: 6px !important;
+    border: 1.5px solid #5c574f !important;
+    background-color: #dce9ef !important;
+    background-image: repeating-linear-gradient(-35deg, rgba(255,255,255,0.45) 0px, rgba(255,255,255,0.45) 4px, transparent 4px, transparent 10px) !important;
+    box-shadow: inset 0 0 0 1.5px #fffdf8, inset 0 0 0 2.5px rgba(92, 87, 79, 0.2) !important;
+}
+
+/* 5. API 卡片：去掉太阳，保留柔和草坡底纹与双层细铅笔线框 */
+[data-theme="subi"] .api-card {
+    border-radius: 8px !important;
+    border: 1.5px solid #5c574f !important;
+    background-color: #fffdf8 !important;
+    background-image: 
+        radial-gradient(ellipse 130% 55% at 75% 108%, rgba(216, 229, 208, 0.55) 0%, rgba(216, 229, 208, 0.55) 70%, transparent 71%),
+        repeating-linear-gradient(-35deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 5px, transparent 5px, transparent 11px) !important;
+    box-shadow: inset 0 0 0 2px #fffdf8, inset 0 0 0 3px rgba(92, 87, 79, 0.25), 0 3px 8px rgba(92, 87, 79, 0.06) !important;
+    padding: 20px 16px 14px !important;
+    overflow: hidden;
+}
+[data-theme="subi"] .api-card::before {
+    display: none !important; /* 彻底去掉右上角的小太阳 */
+}
+[data-theme="subi"] .api-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: inset 0 0 0 2px #fffdf8, inset 0 0 0 3px rgba(92, 87, 79, 0.3), 0 5px 12px rgba(92, 87, 79, 0.1) !important;
+}
+[data-theme="subi"] .api-card h3 {
+    border-bottom: 1.5px dashed rgba(92, 87, 79, 0.25) !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 12px !important;
+    color: #383530 !important;
+}
+[data-theme="subi"] .card-category-tag {
+    background: #d8e5d0 !important;
+    color: #3e5238 !important;
+    border: 1px solid rgba(92, 87, 79, 0.3) !important;
+    border-radius: 4px !important;
+    padding: 2px 7px !important;
+}
+
+/* 6. 卡片与全局色块按钮：文字清晰、斜向手绘笔触 */
+[data-theme="subi"] .macaron-btn {
+    border-radius: 5px !important;
+    border: 1.5px solid #5c574f !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65) !important;
+    background-image: repeating-linear-gradient(
+        -35deg,
+        rgba(255, 255, 255, 0.38) 0px,
+        rgba(255, 255, 255, 0.38) 4px,
+        transparent 4px,
+        transparent 9px
+    ) !important;
+}
+[data-theme="subi"] .btn-blue { background-color: #dce9ef !important; color: #364954 !important; }
+[data-theme="subi"] .btn-yellow { background-color: #f6df9e !important; color: #54441f !important; }
+[data-theme="subi"] .btn-green { background-color: #d8e5d0 !important; color: #33452e !important; }
+[data-theme="subi"] .btn-pink { background-color: #f2d6ce !important; color: #5c3932 !important; }
+[data-theme="subi"] .btn-disabled {
+    background-color: #eeece6 !important;
+    background-image: none !important;
+    border-color: #c2bdb2 !important;
+    color: #a6a198 !important;
+}
+
+/* 7. 弹窗通用外框（添加API / 管理 / 设置） */
+[data-theme="subi"] .modal,
+[data-theme="subi"] .settings-panel {
+    border-radius: 10px !important;
+    border: 1.8px solid #5c574f !important;
+    background-color: #fffdf8 !important;
+    background-image: none !important;
+    box-shadow: inset 0 0 0 3px #fffdf8, inset 0 0 0 4px rgba(92, 87, 79, 0.25), 0 12px 28px rgba(56, 53, 48, 0.12) !important;
+}
+
+/* 8. 详情页重做：保持原有格式，修复翻页按钮被吞、右上角铅笔重叠问题 */
+[data-theme="subi"] .notebook-paper {
+    border-radius: 10px !important;
+    border: 1.8px solid #5c574f !important;
+    background-color: #fffdf8 !important;
+    background-image: none !important;
+    box-shadow: inset 0 0 0 3px #fffdf8, inset 0 0 0 4px rgba(92, 87, 79, 0.25), 0 12px 28px rgba(56, 53, 48, 0.12) !important;
+    padding: 28px 24px 22px 24px !important; /* 左右对称，不再留打孔空白 */
+}
+[data-theme="subi"] .notebook-paper h2 {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px dashed rgba(92, 87, 79, 0.3) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+    padding: 0 35px 10px 0 !important; /* 右侧留出35px给修改按钮✎，绝不重叠 */
+    margin-bottom: 14px !important;
+    font-size: 1.3rem !important;
+    color: #383530 !important;
+}
+[data-theme="subi"] .detail-content {
+    overflow-y: auto; /* 内容再长也可以在内部滑动，绝不把底部的翻页按钮挤没 */
+    padding-right: 4px;
+}
+[data-theme="subi"] .detail-content p {
+    background-color: #f7f4ec !important;
+    border: none !important;
+    border-left: 3.5px solid #b8c9ae !important; /* 清爽的手账左侧竖条设计 */
+    border-radius: 0 6px 6px 0 !important;
+    padding: 8px 12px !important;
+    margin-bottom: 12px !important;
+    box-shadow: none !important;
+}
+[data-theme="subi"] .box-text {
+    color: #5c574f !important;
+}
+[data-theme="subi"] .flip-actions {
+    border-top: 1.5px dashed rgba(92, 87, 79, 0.25) !important;
+    padding-top: 12px !important;
+}
+[data-theme="subi"] .flip-btn,
+[data-theme="subi"] .sticker-btn {
+    border-radius: 5px !important;
+    border: 1.5px solid #5c574f !important;
+    background-color: #f6df9e !important;
+    background-image: repeating-linear-gradient(-35deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 4px, transparent 4px, transparent 9px) !important;
+    box-shadow: none !important;
+    transform: none !important;
+    color: #383530 !important;
+}
+
+/* 9. 表单输入框与底部保存/取消按钮 */
+[data-theme="subi"] .modal h2 {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px dashed rgba(92, 87, 79, 0.3) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-bottom: 10px !important;
+    text-align: center !important;
+}
+[data-theme="subi"] .input-group input,
+[data-theme="subi"] .hand-drawn-select,
+[data-theme="subi"] .add-model-group input {
+    border-radius: 6px !important;
+    border: 1.5px solid rgba(92, 87, 79, 0.65) !important;
+    background-color: #f8f6f0 !important;
+    background-image: none !important;
+    box-shadow: inset 0 1px 3px rgba(92, 87, 79, 0.06) !important;
+}
+[data-theme="subi"] .input-group input:focus,
+[data-theme="subi"] .add-model-group input:focus {
+    background-color: #fffdf8 !important;
+    border-color: #5c574f !important;
+}
+[data-theme="subi"] .btn-save {
+    background-color: #6b7f60 !important;
+    background-image: repeating-linear-gradient(-35deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 5px, transparent 5px, transparent 12px) !important;
+    color: #ffffff !important;
+    border: 1.5px solid #4a5942 !important;
+    border-radius: 6px !important;
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35) !important;
+}
+[data-theme="subi"] .btn-cancel {
+    background-color: #efeae0 !important;
+    border: 1.5px solid #5c574f !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+}
+[data-theme="subi"] .multi-cat-tag {
+    border-radius: 6px !important;
+    border: 1.5px dashed #7a7368 !important;
+    background: #f8f6f0 !important;
+}
+[data-theme="subi"] .multi-cat-tag.active {
+    background: #d8e5d0 !important;
+    border: 1.5px solid #5c574f !important;
+    box-shadow: none !important;
+}
+
+/* 10. 右下角 + 号悬浮按钮 */
+[data-theme="subi"] .fab {
+    border-radius: 12px !important;
+    background-color: #6b7f60 !important;
+    background-image: repeating-linear-gradient(-35deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 5px, transparent 5px, transparent 12px) !important;
+    border: 1.8px solid #4a5942 !important;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35), 0 4px 10px rgba(56, 53, 48, 0.15) !important;
+}
+
+/* ==================================================================== */
+/* ❖ 主题 3：檐下听雨 (原色系完整保留 / 板块形态各异 / 雨滴加号 / 全雨景细节) */
+/* ==================================================================== */
+
+[data-theme="tingyu"] {
+    /* 严格保留你最喜欢的这套烟雨青灰配色，绝不改动 */
+    --bg-purple: #e9eff2;      /* 浅灰蓝雨天底色 */
+    --dot-color: transparent;
+    --main-purple: #9cb0bc;    /* 细浅色卡片边框 (烟雨青灰) */
+    --dark-purple: #364954;    /* 深黛蓝文字色 */
+    --white: #f7fafb;          /* 卡片干净的冷调云白 */
+
+    --macaron-blue: #d3e1e8;   /* 远山青蓝 (链接) */
+    --macaron-yellow: #dce3e6; /* 晨雾浅灰 (密钥) */
+    --macaron-green: #cfe0dd;  /* 苔痕冷青 (邀人) */
+    --macaron-gray: #e3eaed;   /* 禁用浅灰 */
+
+    --main-pink: transparent;  /* 去除厚重硬阴影 */
+    --danger-color: #9bb0bd;   /* 克制的冷灰蓝删除键 */
+    --line-color: #dbe4e8;
+    --tag-bg: #dfeaef;
+    --overlay-bg: rgba(233, 239, 242, 0.88);
+
+    --border-width: 1px;
+    --shadow-size: 0px;
+}
+
+/* -------------------------------------------------------------------- */
+/* 1. 全局背景：疏密有致的斜风细雨 + 水面微澜圈 (纯矢量，清透安静) */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] body {
+    background-color: #e9eff2 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%237892a1' stroke-width='0.85' stroke-opacity='0.2' stroke-linecap='round' fill='none'%3E%3Cline x1='45' y1='15' x2='33' y2='48'/%3E%3Cline x1='155' y1='35' x2='146' y2='60'/%3E%3Cline x1='95' y1='105' x2='82' y2='142'/%3E%3Cline x1='190' y1='130' x2='182' y2='152'/%3E%3Cline x1='30' y1='145' x2='22' y2='168'/%3E%3Cellipse cx='78' cy='150' rx='9' ry='2.5' stroke-opacity='0.14'/%3E%3Cellipse cx='142' cy='68' rx='6' ry='1.8' stroke-opacity='0.12'/%3E%3C/g%3E%3C/svg%3E") !important;
+    background-size: 220px 220px !important;
+}
+
+/* 隐藏默认主题的胶带和笔记本打孔 */
+[data-theme="tingyu"] .tape,
+[data-theme="tingyu"] .binding-holes {
+    display: none !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 2. 大标题板块：【极简悬浮底线 + 单颗雨滴】（告别杂乱！） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .title-wrapper {
+    padding-top: 10px;
+}
+[data-theme="tingyu"] h1 {
+    background: none !important;
+    color: #364954 !important;
+    position: relative;
+    padding: 5px 15px 8px !important;
+    border: none !important;
+    border-bottom: 1.5px solid #9cb0bc !important; /* 极简的单条底线 */
+    border-radius: 0 !important;
+    display: inline-block;
+}
+[data-theme="tingyu"] h1::before {
+    display: none !important; /* 去除左侧多余装饰 */
+}
+/* 右侧专属：一颗优雅滴落的小雨珠 */
+[data-theme="tingyu"] h1::after {
+    content: "";
+    position: absolute;
+    bottom: -6px; /* 卡在横线上 */
+    right: -10px;
+    width: 8px;
+    height: 8px;
+    background-color: #647f8f;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    box-shadow: none !important;
+}
+[data-theme="tingyu"] .subtitle {
+    color: #748c99 !important;
+    font-style: normal !important;
+    letter-spacing: 2px;
+    margin-top: 8px !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 3. 分类导航栏：【斜切雨叶标签 vs 水面涟漪激活态】（独立形态 2） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .category-tabs {
+    padding: 6px 6px 10px 6px !important;
+    align-items: center;
+}
+/* 未选中分类：像一片片斜接雨水的竹叶/水滴切角 */
+[data-theme="tingyu"] .cat-tab {
+    border-radius: 2px 14px 2px 14px !important;
+    border: 1px solid #b5c6d0 !important;
+    background-color: #f2f6f8 !important;
+    color: #546b78 !important;
+    padding: 5px 16px !important;
+    box-shadow: none !important;
+    transition: all 0.25s ease !important;
+}
+/* 选中分类：瞬间化为浑圆的水面双圈涟漪，与未选中形成强烈形态反差 */
+[data-theme="tingyu"] .cat-tab.active,
+[data-theme="tingyu"] .cat-tab:hover {
+    border-radius: 999px !important;
+    background-color: #d3e1e8 !important;
+    border: 1px solid #647f8f !important;
+    color: #2b3c46 !important;
+    transform: translateY(-1px) !important;
+    /* 外扩一圈涟漪水环 */
+    box-shadow: 0 0 0 2px #e9eff2, 0 0 0 3px #9cb0bc !important;
+}
+/* 右侧管理按钮：做成方形“青石水牌”，左侧带双竖线刻度，绝不和分类标签雷同 */
+[data-theme="tingyu"] .manage-cat-btn {
+    border-radius: 3px 10px 10px 3px !important;
+    border: 1px solid #8ea5b2 !important;
+    border-left: 4px double #546e7d !important;
+    background-color: #dfeaef !important;
+    color: #364954 !important;
+    box-shadow: 2px 2px 0px #c5d4dc !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 4. API 卡片板块：【错落雨窗 + 奇偶不同雨景 + 不对称水滴按钮】（独立形态 3） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .api-card {
+    border: 1px solid #b3c4ce !important;
+    border-top: 3px solid #7d96a4 !important; /* 屋檐顶边 */
+    background-color: #f7fafb !important;
+    box-shadow: 0 4px 12px rgba(54, 73, 84, 0.04) !important;
+    padding: 20px 16px 14px 20px !important;
+    overflow: hidden;
+}
+
+/* ★ 打破卡片千篇一律：奇数卡片（左上雨滴圆角 + 右上角斜雨丝暗纹） */
+[data-theme="tingyu"] .api-card:nth-child(odd) {
+    border-radius: 18px 3px 14px 3px !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='90' height='90' viewBox='0 0 90 90' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%239cb0bc' stroke-width='1' stroke-opacity='0.22' stroke-linecap='round'%3E%3Cline x1='65' y1='10' x2='52' y2='35'/%3E%3Cline x1='80' y1='18' x2='70' y2='38'/%3E%3Cline x1='50' y1='8' x2='43' y2='22'/%3E%3C/g%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: top right !important;
+}
+
+/* ★ 打破卡片千篇一律：偶数卡片（右上雨滴圆角 + 底部偏左水波暗纹） */
+[data-theme="tingyu"] .api-card:nth-child(even) {
+    border-radius: 3px 18px 3px 14px !important;
+    border-top-color: #8fa6b3 !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='120' height='40' viewBox='0 0 120 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='35' cy='32' rx='26' ry='6' fill='none' stroke='%239cb0bc' stroke-width='1' stroke-opacity='0.2'/%3E%3Cellipse cx='35' cy='32' rx='14' ry='3' fill='none' stroke='%239cb0bc' stroke-width='0.8' stroke-opacity='0.15'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: bottom left !important;
+}
+
+/* ★ 每逢第3张卡片：顶部变成“双层叠瓦”边框，细节更丰富 */
+[data-theme="tingyu"] .api-card:nth-child(3n) {
+    border-top: 4px double #647f8f !important;
+}
+
+/* 卡片左侧内壁：一道顺流而下的水痕装饰线 */
+[data-theme="tingyu"] .api-card::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 14px;
+    bottom: 35%;
+    width: 1px;
+    background-color: #d3e1e8;
+    box-shadow: 0 6px 0 1px #b5c6d0; /* 底部凝结一小点水珠 */
+    pointer-events: none;
+}
+
+/* 卡片右下角：半露出的水面同心涟漪 */
+[data-theme="tingyu"] .api-card::after {
+    content: "";
+    position: absolute;
+    bottom: -24px;
+    right: -24px;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    border: 1px solid rgba(138, 162, 176, 0.24);
+    box-shadow: inset 0 0 0 10px transparent, inset 0 0 0 11px rgba(138, 162, 176, 0.15);
+    pointer-events: none;
+}
+
+/* 保持批量选中时的勾号正常显示 */
+[data-theme="tingyu"] .api-card.selected::after {
+    content: "✓";
+    bottom: auto; right: auto;
+    width: auto; height: auto;
+    border: none; box-shadow: none;
+}
+
+[data-theme="tingyu"] .api-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: #7d96a4 !important;
+    box-shadow: 0 7px 18px rgba(54, 73, 84, 0.08) !important;
+}
+
+/* 卡片标题与分类小水滴章 */
+[data-theme="tingyu"] .api-card h3 {
+    border-bottom: 1px dashed #cedce3 !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 12px !important;
+    color: #364954 !important;
+    font-weight: normal;
+}
+[data-theme="tingyu"] .card-category-tag {
+    background: #dfeaef !important;
+    color: #49616e !important;
+    border: 1px solid #b5c6d0 !important;
+    /* 小标签做成横向小水滴形状 */
+    border-radius: 0 10px 10px 10px !important;
+    padding: 1px 7px !important;
+}
+
+/* ★ 卡片内部三颗按钮：拒绝一模一样！做成「左水滴、中平水、右水滴」组合 */
+[data-theme="tingyu"] .macaron-btn {
+    border: 1px solid #9cb0bc !important;
+    box-shadow: none !important;
+    font-weight: normal;
+    border-radius: 4px !important;
+}
+[data-theme="tingyu"] .card-buttons .macaron-btn:nth-child(1) {
+    border-radius: 12px 3px 3px 12px !important; /* 左圆右方 */
+}
+[data-theme="tingyu"] .card-buttons .macaron-btn:nth-child(2) {
+    border-radius: 3px !important; /* 中间方正水面 */
+    border-top: 1.5px solid #869eab !important;
+}
+[data-theme="tingyu"] .card-buttons .macaron-btn:nth-child(3) {
+    border-radius: 3px 12px 12px 3px !important; /* 左方右圆 */
+}
+
+[data-theme="tingyu"] .btn-blue { background-color: #d3e1e8 !important; color: #31444f !important; }
+[data-theme="tingyu"] .btn-yellow { background-color: #dce3e6 !important; color: #425259 !important; }
+[data-theme="tingyu"] .btn-green { background-color: #cfe0dd !important; color: #2f4743 !important; }
+[data-theme="tingyu"] .btn-pink { background-color: #dce3e8 !important; color: #46535c !important; }
+[data-theme="tingyu"] .btn-disabled {
+    background-color: #edf2f4 !important;
+    border-color: #d5dfe4 !important;
+    color: #a9b8c0 !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 5. 右下角 + 号悬浮按钮：【饱满欲滴的真实雨滴造型！】（核心需求 2） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .fab {
+    /* 经典水滴几何学：左上角为尖端(0)，其余三角为圆弧(50%)，再顺时针旋转45度让尖端朝正上方 */
+    border-radius: 0 50% 50% 50% !important;
+    transform: rotate(45deg) !important;
+    background-color: #647f8f !important;
+    border: 1.5px solid #f7fafb !important;
+    /* 水滴外围散开一圈淡淡的雨水光晕与下方涟漪阴影 */
+    box-shadow: 
+        inset -3px -3px 0px rgba(54, 73, 84, 0.2),
+        0 0 0 3px #d3e1e8, 
+        4px 4px 12px rgba(54, 73, 84, 0.18) !important;
+    /* 因为按钮旋转了45度，里面的 + 号刚好变成✖，如果希望保持正十字符号，用文字阴影微调居中 */
+    line-height: 52px !important;
+    text-align: center;
+}
+/* 让雨滴悬浮时像水珠颤动一样微微放大，并在下方荡开双层涟漪 */
+[data-theme="tingyu"] .fab:hover {
+    transform: rotate(45deg) scale(1.08) !important;
+    background-color: #546e7d !important;
+    box-shadow: 
+        inset -3px -3px 0px rgba(54, 73, 84, 0.25),
+        0 0 0 4px #e9eff2, 
+        0 0 0 6px #9cb0bc,
+        6px 6px 16px rgba(54, 73, 84, 0.22) !important;
+}
+
+/* -------------------------------------------------------------------- */
+/* 6. 详情页板块：【修复线条冒头 + 锁死高度消灭滚动条】 */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .notebook-paper {
+    border-radius: 16px 16px 4px 4px !important;
+    border: 1px solid #9cb0bc !important;
+    border-bottom: 4px solid #647f8f !important; 
+    background-color: #f7fafb !important;
+    background-image: repeating-linear-gradient(to bottom, rgba(156, 176, 188, 0.15) 0px, rgba(156, 176, 188, 0.15) 1px, transparent 1px, transparent 5px) !important;
+    background-size: 100% 22px !important;
+    background-repeat: no-repeat !important;
+    box-shadow: 0 14px 30px rgba(54, 73, 84, 0.1) !important;
+    padding: 32px 24px 22px 42px !important;
+}
+
+/* 强制锁死外框高度，确保第1页和第2页绝对等高！ */
+[data-theme="tingyu"] .page-wrapper {
+    height: 420px !important; 
+    overflow: hidden !important; 
+}
+/* 彻底消灭内部滚动条，完全自适应展示 */
+[data-theme="tingyu"] .detail-content,
+[data-theme="tingyu"] .model-list {
+    overflow: visible !important;
+    padding-right: 0 !important;
+}
+
+/* 修复左侧垂雨丝：上下往里收缩，绝不超出圆角 */
+[data-theme="tingyu"] .notebook-paper::before {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 24px; /* 往下移，避开顶部圆角 */
+    height: calc(100% - 65px); /* 自动适配剩余高度 */
+    width: 1px;
+    background-color: #9cb0bc;
+    box-shadow: 6px -35px 0 0 #bdcdd6;
+}
+[data-theme="tingyu"] .notebook-paper::after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    bottom: 25px; /* 改用 bottom 定位，紧贴内容底部 */
+    width: 7px;
+    height: 7px;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    border: 1.2px solid #647f8f;
+    background-color: #d3e1e8;
+    box-shadow: 10px 6px 0 -2px #9cb0bc;
+}
+
+[data-theme="tingyu"] .notebook-paper h2 {
+    background: transparent !important;
+    border-bottom: 1px solid #cddae0 !important;
+    display: block !important;
+    padding: 0 35px 10px 0 !important;
+    margin-bottom: 14px !important;
+    font-size: 1.25rem !important;
+    font-weight: normal;
+}
+[data-theme="tingyu"] .detail-content p {
+    background-color: #eef4f7 !important;
+    border: 1px solid #d5e2e8 !important;
+    border-left: 3px solid #7892a1 !important;
+    border-radius: 2px 12px 2px 12px !important;
+    padding: 8px 12px !important;
+    margin-bottom: 12px !important;
+}
+[data-theme="tingyu"] .box-text { color: #546e7d !important; font-weight: normal; }
+[data-theme="tingyu"] .model-item { background: #eef4f7 !important; border: 1px solid #c2d2db !important; border-radius: 12px 2px 12px 2px !important; }
+[data-theme="tingyu"] .model-item:nth-child(even) { border-radius: 2px 12px 2px 12px !important; background: #f2f7f9 !important; }
+[data-theme="tingyu"] .flip-actions { border-top: 1px dashed #c2d2db !important; padding-top: 12px !important; margin-top: auto; }
+[data-theme="tingyu"] .flip-btn, [data-theme="tingyu"] .sticker-btn { border-radius: 12px 2px 12px 2px !important; border: 1px solid #8ea5b2 !important; background-color: #d3e1e8 !important; box-shadow: none !important; color: #364954 !important; }
+
+/* -------------------------------------------------------------------- */
+/* 7. 添加/管理/设置弹窗：【添加弹窗专属叶片造型，区分设置页】 */
+/* -------------------------------------------------------------------- */
+/* 设置页保持波浪顶和原本造型 */
+[data-theme="tingyu"] .settings-panel,
+[data-theme="tingyu"] .manage-menu-modal {
+    border-radius: 4px 20px 4px 20px !important;
+    border: 1px solid #9cb0bc !important;
+    background-color: #f7fafb !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='12' viewBox='0 0 40 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 8 Q 10 2, 20 8 T 40 8' fill='none' stroke='%238ea5b2' stroke-width='1.5' stroke-opacity='0.45'/%3E%3C/svg%3E") !important;
+    background-repeat: repeat-x !important;
+    background-position: top center !important;
+    box-shadow: 0 12px 30px rgba(54, 73, 84, 0.09) !important;
+}
+
+/* ★ 图二专属：添加 API 弹窗的独特设计（水滴叶片形，无波浪） */
+[data-theme="tingyu"] #modal-overlay .modal {
+    border-radius: 35px 4px 35px 4px !important; /* 对角大圆弧 */
+    border: 1px solid #9cb0bc !important;
+    border-top: 4px solid #647f8f !important;
+    background-color: #f7fafb !important;
+    background-image: none !important; /* 去掉波浪纹 */
+    box-shadow: 0 15px 35px rgba(54, 73, 84, 0.12) !important;
+    padding: 30px 25px !important;
+}
+
+[data-theme="tingyu"] .settings-header { background: transparent !important; border-bottom: 1px dashed #c5d4dc !important; padding-top: 24px !important; }
+[data-theme="tingyu"] .settings-section { background-color: #f0f5f7; padding: 14px 16px; border-radius: 2px 14px 2px 14px; border: 1px solid #dce5ea; }
+[data-theme="tingyu"] .modal h2 { font-weight: normal; color: #364954 !important; border-bottom: 1px dashed #cddae0 !important; padding-bottom: 12px !important; margin-bottom: 20px !important; }
+
+/* 极简水面横波底线输入框 */
+[data-theme="tingyu"] .input-group input,
+[data-theme="tingyu"] .hand-drawn-select,
+[data-theme="tingyu"] .add-model-group input {
+    border-radius: 4px 4px 0 0 !important;
+    border: none !important;
+    border-bottom: 1.5px solid #8ea5b2 !important;
+    background-color: rgba(211, 225, 232, 0.35) !important;
+    box-shadow: none !important;
+    transition: all 0.2s;
+}
+[data-theme="tingyu"] .input-group input:focus,
+[data-theme="tingyu"] .add-model-group input:focus {
+    background-color: #ffffff !important;
+    border-bottom: 2px solid #546e7d !important;
+}
+
+[data-theme="tingyu"] .btn-save { background-color: #647f8f !important; color: #ffffff !important; border: 1px solid #526978 !important; border-radius: 2px 12px 2px 12px !important; box-shadow: none !important; }
+[data-theme="tingyu"] .btn-cancel { background-color: #ebf1f4 !important; border: 1px solid #b5c6d0 !important; border-radius: 12px 2px 12px 2px !important; box-shadow: none !important; }
+[data-theme="tingyu"] .multi-cat-tag { border-radius: 0 12px 12px 12px !important; border: 1px solid #b5c6d0 !important; background: #f0f5f7 !important; }
+[data-theme="tingyu"] .multi-cat-tag.active { background: #d3e1e8 !important; border: 1px solid #647f8f !important; box-shadow: 0 0 0 2px #e9eff2, 0 0 0 3px #9cb0bc !important; }
+
+/* -------------------------------------------------------------------- */
+/* 8. 底部批量操作栏：【一排晶莹雨滴按钮】（独立形态 6） */
+/* -------------------------------------------------------------------- */
+[data-theme="tingyu"] .bottom-action-sheet {
+    background: #f2f6f8 !important;
+    border-top: 2px solid #9cb0bc !important;
+    box-shadow: 0 -6px 20px rgba(54, 73, 84, 0.08) !important;
+}
+/* 底部栏的每个图标外框都变成一颗斜向小雨滴 */
+[data-theme="tingyu"] .action-icon {
+    border-radius: 0 50% 50% 50% !important;
+    border-width: 1.5px !important;
+    background: #f7fafb !important;
+}

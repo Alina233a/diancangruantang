@@ -1,0 +1,991 @@
+/* ================= 主题色彩变量 ================= */
+/* ================= 主题色彩与全局变量 ================= */
+:root {
+    --bg-purple: #f8f5fc;      
+    --dot-color: #e6daef;      
+    --main-purple: #bca0dc;    
+    --dark-purple: #6c5b7b;    
+    --main-pink: #ffcce6;      
+    --white: #ffffff;
+    --macaron-blue: #bde0fe;
+    --macaron-yellow: #fcf6bd;
+    --macaron-green: #d8f3dc;
+    --macaron-gray: #f0f0f0;
+    
+    --tape-bg: rgba(255, 204, 230, 0.7);
+    --tape-border: rgba(179, 157, 219, 0.4);
+    --danger-color: #d9a5b3;
+    --line-color: #ebdff2;
+    --tag-bg: #f3e8fa;
+    --overlay-bg: rgba(245, 240, 250, 0.85);
+
+    /* 新增：结构控制变量 (默认主题) */
+    --border-width: 2px;
+    --shadow-size: 4px;
+    --bg-pattern: radial-gradient(var(--dot-color) 1.5px, transparent 1.5px);
+    --bg-size: 25px 25px;
+}
+
+[data-theme="subi"] {
+    /* 主题2：素笔闲抄 (温馨森系手账，彩铅配色) */
+    --bg-purple: #f7f5ee;      /* 温暖的米白纸张底色 */
+    --dot-color: transparent;  /* 绝对不要圆点 */
+    --main-purple: #686a5e;    /* 核心：铅笔石墨灰 (带微弱绿灰底色，非常治愈) */
+    --dark-purple: #3d3b36;    /* 文字颜色 (深炭灰) */
+    --main-pink: #dfdbcf;      /* 阴影色 (非常浅的灰卡其色) */
+    --white: #ffffff;
+    
+    /* 从参考图提取的森系彩铅色块 */
+    --macaron-blue: #c1d5d8;   /* 浅灰蓝色 (参考图中物品的颜色) */
+    --macaron-yellow: #f3d996; /* 暖芥末黄 (参考图中美食的颜色) */
+    --macaron-green: #b4c7a6;  /* 抹茶灰绿 (参考图中行程的颜色) */
+    --macaron-gray: #e6e4dc;   
+    
+    --danger-color: #d4a39e;   /* 柔和豆沙粉 */
+    --line-color: #e6e4dc;     
+    --tag-bg: #f3d996;         
+    --overlay-bg: rgba(247, 245, 238, 0.85);
+
+    --border-width: 2px;       /* 铅笔需要2px厚度才能展现出毛绒绒感 */
+    --shadow-size: 3px;
+    
+    /* 极致轻微的背景排线，模拟本子的纸张纹理 */
+    --bg-pattern: repeating-linear-gradient(45deg, rgba(104,106,94,0.04) 0px, rgba(104,106,94,0.04) 1px, transparent 1px, transparent 7px),
+                  repeating-linear-gradient(-45deg, rgba(104,106,94,0.03) 0px, rgba(104,106,94,0.03) 1px, transparent 1px, transparent 9px);
+    --bg-size: auto;
+}
+
+[data-theme="tingyu"] {
+    --bg-purple: #eff4f5;      
+    --dot-color: #d4e0e4;      
+    --main-purple: #7a9da8;    
+    --dark-purple: #3f5863;    
+    --main-pink: #b2c9d1;      
+    --white: #f9fbfc;
+    --macaron-blue: #d2e1e6;
+    --macaron-yellow: #e4ecef;
+    --macaron-green: #c4d9e0;
+    --macaron-gray: #d4e0e4;
+    
+    --tape-bg: rgba(178, 201, 209, 0.7);
+    --tape-border: rgba(122, 157, 168, 0.4);
+    --danger-color: #79949c;
+    --line-color: #d4e0e4;
+    --tag-bg: #e4ecef;
+    --overlay-bg: rgba(239, 244, 245, 0.85);
+}
+
+[data-theme="baiyu"] {
+    --bg-purple: #fcfcfc;      
+    --dot-color: #e0e0e0;      
+    --main-purple: #888888;    
+    --dark-purple: #222222;    
+    --main-pink: #cccccc;      
+    --white: #ffffff;
+    --macaron-blue: #eeeeee;
+    --macaron-yellow: #f5f5f5;
+    --macaron-green: #e5e5e5;
+    --macaron-gray: #e0e0e0;
+    
+    --tape-bg: rgba(204, 204, 204, 0.7);
+    --tape-border: rgba(136, 136, 136, 0.4);
+    --danger-color: #777777;
+    --line-color: #e0e0e0;
+    --tag-bg: #f5f5f5;
+    --overlay-bg: rgba(252, 252, 252, 0.85);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 1. 彻底解决 Chrome 顶部和 Safari 底部的背景空白 */
+html {
+    background-color: var(--bg-purple);
+    /* 强制填满高度，兼容旧版 iOS */
+    height: 100%;
+    min-height: 100vh;
+    /* 核心修复：苹果专属属性，完美自动扣除上下工具栏的高度 */
+    min-height: -webkit-fill-available;
+    overscroll-behavior: none; 
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'PingFang SC', sans-serif;
+    color: var(--dark-purple);
+    padding: 5px 20px 40px; 
+    min-height: 100vh;
+    background-color: var(--bg-purple);
+    /* 👇 重点改这三行 👇 */
+    background-image: var(--bg-pattern); 
+    background-size: var(--bg-size);     
+    transition: background 0.3s ease;    
+    /* 👆 重点改这三行 👆 */
+    overflow-x: hidden;
+}
+
+header {
+    text-align: center;
+    padding: 10px 0 15px; 
+    margin-bottom: 10px;
+}
+
+.title-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+h1 {
+    font-size: 2.2rem; 
+    color: var(--dark-purple);
+    letter-spacing: 2px;
+    background: linear-gradient(to top, var(--main-pink) 30%, transparent 30%);
+    display: inline-block;
+    padding: 0 10px;
+    
+    /* 新增这行，强制消除标题自带的顶部空隙 */
+    margin-top: 0; 
+}
+
+.subtitle {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--main-purple);
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.api-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+}
+
+.hand-drawn-border {
+    border: 2px solid var(--main-purple);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+}
+
+.api-card {
+    background: var(--white);
+    padding: 20px 15px 12px; 
+    position: relative;
+    word-break: break-all;
+    box-shadow: 4px 4px 0px var(--main-pink);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.api-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--main-pink);
+}
+
+.tape {
+    position: absolute; width: 60px; height: 18px;
+    background-color: var(--tape-bg);
+    border: 1px solid var(--tape-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); z-index: 2;
+}
+
+.tape.top-center {
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+}
+
+.tape.top-left {
+    top: -8px;
+    left: -8px;
+    transform: rotate(-45deg);
+}
+
+.api-card h3 {
+    margin-bottom: 10px; 
+    font-size: 1.1rem; 
+    border-bottom: 2px dashed var(--dot-color);
+    padding-bottom: 5px;
+    margin-right: 20px; 
+}
+
+.card-buttons {
+    display: flex;
+    gap: 6px;
+    margin-top: 5px;
+    justify-content: space-between;
+}
+
+.macaron-btn {
+    flex: 1;
+    padding: 4px 0; 
+    border: 1.5px solid var(--dark-purple);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    font-size: 0.75rem; 
+    font-weight: bold;
+    color: var(--dark-purple);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+    transition: transform 0.1s;
+    box-shadow: 2px 2px 0px var(--dot-color);
+}
+
+.macaron-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--dot-color);
+}
+
+.btn-blue { background: var(--macaron-blue); }
+.btn-yellow { background: var(--macaron-yellow); }
+.btn-green { background: var(--macaron-green); }
+.btn-disabled { 
+    background: var(--macaron-gray); 
+    color: #a0a0a0; 
+    border-color: #d0d0d0;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.delete-btn {
+    position: absolute; top: 10px; right: 12px; background: none; border: none;
+    color: var(--danger-color); font-size: 1.1rem; cursor: pointer;
+    font-family: 'Comic Sans MS', sans-serif; z-index: 10;
+}
+
+.delete-btn:hover {
+    color: #c97a8e;
+    font-weight: bold;
+    transform: scale(1.1);
+}
+
+.fab {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50% 40% 50% 40% / 40% 50% 40% 50%;
+    background-color: var(--main-purple);
+    border: 2px solid var(--dark-purple);
+    box-shadow: 4px 4px 0px var(--main-pink);
+    color: var(--white);
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 100;
+}
+
+.fab:hover {
+    transform: scale(1.05) rotate(10deg);
+}
+
+/* 核心修复：彻底隐藏元素，不占空间 */
+.d-none {
+    display: none !important;
+}
+
+#modal-overlay, #detail-modal-overlay, #manage-menu-overlay, #batch-move-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--overlay-bg); display: flex;
+    justify-content: center; align-items: center; z-index: 200;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+
+.modal {
+    background: var(--white);
+    padding: 35px 30px 30px;
+    width: 90%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 8px 8px 0px var(--main-pink);
+}
+
+.notebook-paper {
+    background: var(--white); padding: 35px 25px 25px 48px; width: 90%; max-width: 400px;
+    position: relative; border-radius: 5px 15px 15px 5px; box-shadow: 6px 6px 0px var(--main-pink);
+    border: 2px solid var(--main-purple);
+    background-image: repeating-linear-gradient(transparent, transparent 38px, var(--line-color) 38px, var(--line-color) 40px);
+    background-position: 0 45px;
+}
+
+.binding-holes {
+    position: absolute;
+    left: 10px;
+    top: 30px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hole {
+    width: 14px;
+    height: 14px;
+    background: rgba(245, 240, 250, 0.8);
+    border-radius: 50%;
+    border: 2px solid var(--main-purple);
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.tape.top-right {
+    top: -12px;
+    right: 20px;
+    transform: rotate(6deg);
+}
+
+.notebook-paper h2 {
+    color: var(--dark-purple);
+    font-size: 1.4rem;
+    margin-bottom: 12px; /* 【修改点】原来是25px，现在改成12px */
+    display: inline-block;
+    background: #fcfbfa; 
+    padding-right: 10px;
+}
+
+.detail-content p {
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+    line-height: 1.6;
+    background: rgba(252, 251, 250, 0.8);
+    border-radius: 5px;
+}
+
+.detail-content strong {
+    color: var(--dark-purple);
+}
+
+.box-text {
+    display: inline-block;
+    color: var(--main-purple);
+    word-break: break-all;
+    margin-top: 4px;
+    font-weight: bold;
+    font-family: inherit;
+}
+
+.copyable {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.copyable:hover {
+    color: var(--main-pink);
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--main-purple);
+    font-size: 1.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--main-pink);
+}
+
+.flip-actions {
+    margin-top: auto; /* 核心技巧：把翻页按钮永远挤到本子的最底部 */
+    text-align: right;
+    border-top: 2px dashed var(--dot-color);
+    padding-top: 15px;
+}
+
+.flip-btn {
+    background: var(--white);
+    border: 2px solid var(--main-purple);
+    border-radius: 15px 5px 15px 5px;
+    padding: 6px 12px;
+    color: var(--dark-purple);
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px var(--dot-color);
+    transition: all 0.2s;
+}
+
+.flip-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--main-pink);
+}
+
+/* 第二页模型样式：小贴纸风格按钮 */
+.sticker-btn {
+    border: 2px dashed var(--main-purple);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px;
+    padding: 6px 12px;
+    color: var(--dark-purple);
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--main-pink);
+    transition: all 0.2s;
+    transform: rotate(-2deg); /* 微微倾斜看起来像贴上去的 */
+}
+
+.sticker-btn:hover {
+    transform: rotate(2deg) scale(1.05);
+    box-shadow: 4px 4px 0px var(--main-pink);
+}
+
+.sticker-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.add-model-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px; /* 【修改点】把输入框和下面列表的距离也稍微收紧一点 */
+}
+
+.add-model-group input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 2px solid var(--dot-color);
+    border-radius: 5px;
+    outline: none;
+    font-family: inherit;
+    background: #fff;
+    color: var(--dark-purple);
+}
+
+.add-model-group input:focus {
+    border-color: var(--main-purple);
+}
+
+.model-list {
+    flex: 1;
+    overflow-y: auto;
+    
+    /* 核心修复 5：iOS 的专属 Bug，必须加上这句，内部滑动条才会真正生效！ */
+    min-height: 0; 
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-right: 5px;
+}
+
+.model-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px dashed var(--main-purple);
+}
+
+.model-item-name {
+    font-weight: bold;
+    color: var(--dark-purple);
+    word-break: break-all;
+    margin-right: 10px;
+    font-size: 0.95rem;
+}
+
+.model-actions-btn {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.model-delete-btn {
+    background: none;
+    border: none;
+    color: #d9a5b3;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.modal h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.3rem;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--dot-color);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px;
+    outline: none;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--dark-purple);
+    background-color: #fdfcfd;
+}
+
+.input-group input:focus {
+    border-color: var(--main-purple);
+    background-color: var(--white);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: bold;
+    font-family: inherit;
+    width: 45%;
+    transition: transform 0.1s;
+}
+
+.modal-actions button:active {
+    transform: translate(2px, 2px);
+    box-shadow: none !important;
+}
+
+.btn-cancel {
+    background: var(--white);
+    color: var(--dark-purple);
+    box-shadow: 3px 3px 0px var(--dot-color);
+}
+
+.btn-save {
+    background: var(--main-pink);
+    color: var(--dark-purple);
+    box-shadow: 3px 3px 0px var(--main-purple);
+}
+
+@media (max-width: 600px) {
+    .fab { bottom: 25px; right: 25px; }
+}
+
+.page-wrapper {
+    height: 370px; 
+    display: flex;
+    flex-direction: column;
+    /* 核心修复 4：强制锁死弹窗高度，绝不允许里面的内容撑高整个页面 */
+    overflow: hidden; 
+}
+
+/* 给模型列表的滑动条加上可爱的粉色样式 */
+.model-list::-webkit-scrollbar {
+    width: 6px;
+}
+.model-list::-webkit-scrollbar-thumb {
+    background-color: var(--main-pink);
+    border-radius: 10px;
+}
+.model-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.detail-content {
+    flex: 1; 
+}
+
+.copy-icon-btn {
+    padding: 2px 8px; /* 上下边距缩小 */
+    font-size: 1.1rem; /* 符号稍微调大一点点 */
+    line-height: 1.2;
+    font-weight: normal; 
+}
+
+.category-bar {
+    max-width: 1100px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cat-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.category-tabs {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    scrollbar-width: none; /* 隐藏滚动条 Firefox */
+}
+
+.category-tabs::-webkit-scrollbar {
+    display: none; /* 隐藏滚动条 Chrome/Safari */
+}
+
+.cat-tab {
+    white-space: nowrap;
+    padding: 6px 16px;
+    background: transparent;
+    border: 2px dashed var(--main-purple);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    color: var(--dark-purple);
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.cat-tab.active, .cat-tab:hover {
+    background: var(--main-pink);
+    border-style: solid;
+    box-shadow: 2px 2px 0px var(--main-purple);
+    transform: translate(-1px, -1px);
+}
+
+.manage-cat-btn {
+    white-space: nowrap;
+    padding: 6px 12px;
+    background: var(--macaron-blue);
+    color: var(--dark-purple);
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 2px 2px 0px var(--main-purple);
+}
+
+.manage-cat-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.hand-drawn-select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--dot-color);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px;
+    outline: none;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--dark-purple);
+    background-color: #fdfcfd;
+    appearance: none; /* 移除默认箭头 */
+}
+
+.hand-drawn-select:focus {
+    border-color: var(--main-purple);
+    background-color: var(--white);
+}
+
+/* 补充一个粉色按钮通用类 */
+.btn-pink { background: var(--main-pink); }
+
+/* ================= 整合菜单弹窗 ================= */
+.manage-menu-modal {
+    display: flex; flex-direction: column; gap: 15px; 
+    width: 80%; max-width: 300px; padding: 25px 20px;
+    text-align: center;
+}
+
+.menu-btn { 
+    padding: 12px; font-size: 1rem; 
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px; 
+}
+
+/* ================= 仿图二底部操作栏 ================= */
+.bottom-action-sheet {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: var(--bg-purple); border-top: 2px solid var(--dot-color);
+    box-shadow: 0 -4px 15px rgba(188, 160, 220, 0.25);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 15px 10px 25px; z-index: 150;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(100%);
+}
+
+.bottom-action-sheet:not(.hidden) { transform: translateY(0); }
+.bottom-action-sheet.hidden { display: flex; }
+
+.action-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold; flex: 1;
+}
+
+.action-icon {
+    font-size: 1.4rem; width: 42px; height: 42px;
+    display: flex; justify-content: center; align-items: center;
+    border: 2px solid; border-radius: 12px 6px 12px 6px / 6px 12px 6px 12px;
+    background: var(--white); transition: transform 0.1s;
+}
+
+.action-item:active .action-icon { transform: scale(0.9); }
+.count-item { cursor: default; }
+.count-item .action-icon { font-family: 'Comic Sans MS', sans-serif; font-size: 1.2rem; }
+
+/* 严格遵循色彩层级：紫主、粉副、蓝收尾 */
+.icon-purple { color: var(--main-purple); border-color: var(--main-purple); }
+.text-purple { color: var(--main-purple); }
+.icon-purple-solid { color: var(--white); border-color: var(--main-purple); background: var(--main-purple); }
+.icon-pink { color: #d9a5b3; border-color: #d9a5b3; }
+.text-pink { color: #d9a5b3; }
+.icon-blue { color: #8faadc; border-color: #8faadc; }
+.text-blue { color: #8faadc; }
+
+/* ================= 卡片选中特效 ================= */
+.api-card.selected {
+    border: 3px dashed var(--main-purple); background-color: #fdfafc;
+    transform: scale(0.96); box-shadow: 0 0 10px rgba(188, 160, 220, 0.5);
+}
+
+.api-card.selected::after {
+    content: "✓"; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); font-size: 5rem;
+    color: var(--main-purple); opacity: 0.25; pointer-events: none;
+    font-weight: bold; font-family: 'Comic Sans MS', sans-serif;
+}
+
+/* ================= 卡片上的分类小标签 ================= */
+.card-category-tag {
+    font-size: 0.7rem; color: var(--dark-purple); background: var(--tag-bg);
+    padding: 2px 6px; border: 1px dashed var(--main-purple);
+    border-radius: 2px 8px 2px 8px / 8px 2px 8px 2px; margin-left: 6px; vertical-align: middle; display: inline-block;
+}
+
+/* ================= 修正管理按钮高度与分类标签完全一致 ================= */
+.manage-cat-btn {
+    /* 如果你想自己改高度，调整这里的 6px (上下) 和 12px (左右) 即可 */
+    padding: 6px 12px !important; 
+    display: flex;
+    align-items: center;
+    height: max-content;
+    margin-bottom: 5px; /* 抵消左侧分类滑轨带来的底边距 */
+}
+
+/* ================= 多选标签容器 ================= */
+.multi-cat-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; justify-content: center; }
+.multi-cat-container.left-align { justify-content: flex-start; margin-bottom: 0; }
+.multi-cat-tag {
+    padding: 4px 10px; border: 2px dashed var(--main-purple); border-radius: 15px;
+    font-size: 0.85rem; cursor: pointer; color: var(--dark-purple); transition: all 0.2s; background: var(--white);
+}
+.multi-cat-tag.active { background: var(--main-pink); border-style: solid; box-shadow: 2px 2px 0px var(--main-purple); transform: translate(-1px, -1px); font-weight: bold; }
+
+/* ================= 全新设置面板 (分离式滚动，无胶带设计) ================= */
+#settings-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(245, 240, 250, 0.85); display: flex;
+    justify-content: center; align-items: center; z-index: 250;
+}
+
+.settings-panel {
+    background: var(--white);
+    width: 90%;
+    max-width: 420px;
+    height: 80vh; /* 固定高度占比，确保不会撑爆屏幕 */
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(188, 160, 220, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 切割圆角内部内容 */
+    border: 1px solid rgba(188, 160, 220, 0.4);
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: #fdfbfd;
+    border-bottom: 2px dashed var(--dot-color);
+    flex-shrink: 0; /* 绝对禁止头部被挤压 */
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--dark-purple);
+}
+
+.close-icon-btn {
+    background: none; border: none; font-size: 1.3rem;
+    color: var(--main-purple); cursor: pointer; transition: color 0.2s;
+}
+
+.close-icon-btn:hover { color: var(--main-pink); }
+
+.settings-body {
+    padding: 25px 25px 40px;
+    overflow-y: auto; /* 核心：让这里自己独立滚动 */
+    flex: 1;
+}
+
+.settings-body::-webkit-scrollbar { width: 6px; }
+.settings-body::-webkit-scrollbar-thumb { background-color: var(--main-pink); border-radius: 10px; }
+
+.settings-section {
+    margin-bottom: 30px;
+}
+.settings-section:last-child { margin-bottom: 0; }
+
+.settings-section h3 {
+    color: var(--dark-purple); font-size: 1.05rem; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+}
+.settings-tip { font-size: 0.75rem; color: var(--main-purple); margin-bottom: 15px; }
+
+.settings-actions { display: flex; gap: 10px; margin-top: 20px; }
+.settings-actions button { padding: 12px 0; font-size: 0.95rem; }
+
+/* ================= 主题下拉框 ================= */
+.hand-drawn-select {
+    width: 100%; padding: 10px 15px; border: 2px solid var(--dot-color);
+    border-radius: 2px 10px 2px 10px / 10px 2px 10px 2px; outline: none;
+    font-size: 0.95rem; font-family: inherit; color: var(--dark-purple);
+    background-color: var(--white); cursor: pointer;
+}
+.hand-drawn-select:focus { border-color: var(--main-purple); }
+
+/* ================= 现代极简设置面板 ================= */
+#settings-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--overlay-bg); display: flex;
+    justify-content: center; align-items: center; z-index: 250;
+}
+
+.settings-panel {
+    background: var(--white); width: 90%; max-width: 420px;
+    height: 80vh; 
+    border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    display: flex; flex-direction: column; overflow: hidden; 
+    border: 1px solid var(--dot-color);
+}
+
+.settings-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 25px; background: var(--white); border-bottom: 2px dashed var(--dot-color); flex-shrink: 0;
+}
+.settings-header h2 { margin: 0; font-size: 1.25rem; color: var(--dark-purple); }
+.close-icon-btn { background: none; border: none; font-size: 1.3rem; color: var(--main-purple); cursor: pointer; }
+.close-icon-btn:hover { color: var(--main-pink); }
+
+.settings-body { padding: 25px 25px 40px; overflow-y: auto; flex: 1; background: var(--white); }
+.settings-body::-webkit-scrollbar { width: 6px; }
+.settings-body::-webkit-scrollbar-thumb { background-color: var(--main-pink); border-radius: 10px; }
+
+.settings-section { margin-bottom: 30px; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-section h3 { color: var(--dark-purple); font-size: 1.05rem; margin-bottom: 8px; }
+.settings-tip { font-size: 0.75rem; color: var(--main-purple); margin-bottom: 15px; }
+.settings-actions { display: flex; gap: 10px; margin-top: 20px; }
+.settings-actions button { padding: 12px 0; font-size: 0.95rem; }
+
+/* ================= 动态边框与全局阴影自适应 ================= */
+.hand-drawn-border, .macaron-btn, .notebook-paper, .action-icon, .tape, .multi-cat-tag, .hand-drawn-select, .input-group input, .sticker-btn, .model-item {
+    border-width: var(--border-width, 2px) !important;
+}
+.api-card h3, .settings-header, .settings-section, .flip-actions {
+    border-bottom-width: var(--border-width, 2px) !important;
+}
+.api-card, .fab, .modal, .notebook-paper, .sticker-btn, .manage-menu-modal, .settings-panel {
+    box-shadow: var(--shadow-size, 4px) var(--shadow-size, 4px) 0px var(--main-pink) !important;
+}
+.api-card:hover, .sticker-btn:hover {
+    box-shadow: calc(var(--shadow-size, 4px) + 2px) calc(var(--shadow-size, 4px) + 2px) 0px var(--main-pink) !important;
+}
+
+/* ================= 针对【素笔闲抄】的 UI 彻底重塑与毛绒铅笔特效 ================= */
+
+/* 1. 彻底干掉卡片胶带和活页本打孔 */
+[data-theme="subi"] .tape,
+[data-theme="subi"] .binding-holes {
+    display: none !important;
+}
+
+/* 2. 详情页（原活页本）去除横线，恢复干净底板，修复左侧间距 */
+[data-theme="subi"] .notebook-paper {
+    background-image: none !important;
+    padding: 30px 25px 25px 25px !important;
+}
+[data-theme="subi"] .notebook-paper h2 {
+    background: transparent !important;
+    border-bottom: 2px dashed var(--main-purple) !important; /* 铅笔虚线 */
+    padding-bottom: 5px; margin-bottom: 20px;
+}
+
+/* 3. 核心魔法：毛茸茸的铅笔边框质感 */
+[data-theme="subi"] .hand-drawn-border, 
+[data-theme="subi"] .macaron-btn, 
+[data-theme="subi"] .cat-tab, 
+[data-theme="subi"] .sticker-btn, 
+[data-theme="subi"] .input-group input, 
+[data-theme="subi"] .hand-drawn-select, 
+[data-theme="subi"] .multi-cat-tag,
+[data-theme="subi"] .card-category-tag,
+[data-theme="subi"] .api-card,
+[data-theme="subi"] .modal,
+[data-theme="subi"] .notebook-paper,
+[data-theme="subi"] .settings-panel {
+    /* 微微不规则的微圆角，拒绝死板工业风 */
+    border-radius: 4px 6px 5px 4px / 5px 4px 6px 5px !important;
+    border: 2px solid var(--main-purple) !important;
+    /* 利用极小范围的内外模糊阴影，模拟石墨粉末在纸上晕开的毛茸茸感！ */
+    box-shadow: 0px 0px 1px 0px rgba(104,106,94,0.6), 
+                inset 0px 0px 1px 0px rgba(104,106,94,0.6),
+                var(--shadow-size, 3px) var(--shadow-size, 3px) 0px var(--main-pink) !important;
+}
+
+/* 悬浮时的毛边阴影状态 */
+[data-theme="subi"] .api-card:hover, 
+[data-theme="subi"] .sticker-btn:hover {
+    box-shadow: 0px 0px 1px 0px rgba(104,106,94,0.6), 
+                inset 0px 0px 1px 0px rgba(104,106,94,0.6),
+                calc(var(--shadow-size, 3px) + 2px) calc(var(--shadow-size, 3px) + 2px) 0px var(--main-pink) !important;
+}
+
+/* 4. 模型小贴纸端正排版 (取消倾斜) */
+[data-theme="subi"] .sticker-btn {
+    transform: none !important; 
+}
+[data-theme="subi"] .sticker-btn:hover {
+    transform: scale(1.02) !important;
+}
+
+/* 5. 主标题下划线样式 (去掉粉色渐变块) */
+[data-theme="subi"] h1 {
+    background: none !important;
+    border-bottom: 4px solid var(--macaron-yellow);
+    border-radius: 2px;
+    padding-bottom: 2px;
+}
+
+/* 6. FAB悬浮按钮微圆角化 */
+[data-theme="subi"] .fab {
+    border-radius: 14px !important;
+}

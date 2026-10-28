@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>叙岑盒</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -23,17 +23,19 @@
         </defs>
     </svg>
     
-    <header>
-        <div class="title-wrapper">
-            <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;" title="电脑右键 / 手机长按进入设置">叙岑盒</h1>
-            <span class="subtitle">My API Collection</span>
-        </div>
-    </header>
+    <div class="sticky-top-wrapper">
+        <header>
+            <div class="title-wrapper">
+                <h1 id="main-title" style="-webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer;" title="电脑右键 / 手机长按进入设置">叙岑盒</h1>
+                <span class="subtitle">My API Collection</span>
+            </div>
+        </header>
 
-    <div class="category-bar">
-        <div class="category-tabs" id="category-tabs"></div>
-        <div class="cat-actions">
-            <button class="manage-cat-btn hand-drawn-border" onclick="openManageMenu()">管理 ⊞</button>
+        <div class="category-bar">
+            <div class="category-tabs" id="category-tabs"></div>
+            <div class="cat-actions">
+                <button class="manage-cat-btn hand-drawn-border" onclick="openManageMenu()">管理 ⊞</button>
+            </div>
         </div>
     </div>
 
@@ -75,7 +77,7 @@
             <h2 style="margin-bottom: 10px; font-size: 1.2rem;">要管理什么呢 ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა</h2>
             <button onclick="toggleBatchMode(); closeManageMenu()" class="macaron-btn btn-blue menu-btn">批量管理卡片 ⊞</button>
             <button onclick="openCategoryManage(); closeManageMenu()" class="macaron-btn btn-pink menu-btn">添加/删除分类 ✎</button>
-            <button onclick="closeManageMenu()" class="macaron-btn btn-disabled menu-btn">取消 ✖</button>
+            <button onclick="closeManageMenu()" class="macaron-btn btn-yellow menu-btn">取消 ✖</button>
         </div>
     </div>
 
@@ -102,11 +104,35 @@
             <button id="close-detail-btn" class="close-btn" onclick="editApiInfo()" title="修改信息">✎</button>
             
             <div id="page-1" class="page-wrapper">
-                <h2><span id="detail-name">API 名称</span></h2>
+                <h2>
+                    <span id="detail-name" class="detail-display">API 名称</span>
+                    <input type="text" id="edit-name" class="detail-input d-none">
+                </h2>
                 <div class="detail-content">
-                    <p><strong>URL：</strong><br><span class="box-text copyable" id="detail-url" onclick="copyText(event, this.innerText)" title="点击复制"></span></p>
-                    <p><strong>KEY：</strong><br><span class="box-text copyable" id="detail-key" onclick="copyText(event, this.innerText)" title="点击复制"></span></p>
-                    <p><strong>邀人链接：</strong><br><span class="box-text copyable" id="detail-share" onclick="copyText(event, this.innerText)" title="点击复制"></span></p>
+                    <p>
+                        <span class="url-header-row">
+                            <strong>URL：</strong>
+                            <span id="url-capsule-bar" class="url-capsule-bar detail-display"></span>
+                        </span>
+                        <span class="box-text copyable detail-display" id="detail-url" onclick="copyText(event, this.innerText)" title="点击复制"></span>
+                        <textarea id="edit-url" class="detail-input d-none" rows="3" placeholder="一行填写一个URL（第一行为主线，其余为备用）"></textarea>
+                    </p>
+                    <p><strong>KEY：</strong><br>
+                        <span class="box-text copyable detail-display" id="detail-key" onclick="copyText(event, this.innerText)" title="点击复制"></span>
+                        <input type="text" id="edit-key" class="detail-input d-none">
+                    </p>
+                    <p><strong>邀人链接：</strong><br>
+                        <span class="box-text copyable detail-display" id="detail-share" onclick="copyText(event, this.innerText)" title="点击复制"></span>
+                        <input type="text" id="edit-share" class="detail-input d-none">
+                    </p>
+                    <p><strong>官网链接：</strong><br>
+                        <span class="box-text copyable detail-display" id="detail-website" onclick="copyText(event, this.innerText)" title="点击复制"></span>
+                        <input type="text" id="edit-website" class="detail-input d-none">
+                    </p>
+                    <p><strong>所属分类：</strong><br>
+                        <span class="box-text detail-display" id="detail-categories"></span>
+                        <span id="edit-category-list" class="multi-cat-container left-align d-none" style="margin-top: 8px; display: flex;"></span>
+                    </p>
                 </div>
                 <div class="flip-actions">
                     <button class="flip-btn" onclick="flipPage(2)">下一页：模型 &gt;</button>
@@ -138,7 +164,7 @@
                 </div>
                 <div class="input-group">
                     <label for="api-url">API URL</label>
-                    <input type="url" id="api-url" required placeholder="https://...">
+                    <textarea id="api-url" rows="2" required placeholder="https://... (若有备用网址请换行填写)"></textarea>
                 </div>
                 <div class="input-group">
                     <label for="api-key">API Key</label>
@@ -147,6 +173,10 @@
                 <div class="input-group">
                     <label for="api-share">邀人链接</label>
                     <input type="url" id="api-share" placeholder="邀请新人链接 (选填)">
+                </div>
+                <div class="input-group">
+                    <label for="api-website">官网链接</label>
+                    <input type="url" id="api-website" placeholder="填写官网链接 (选填)">
                 </div>
                 <div class="input-group">
                     <label>所属分类 (可多选)</label>
@@ -171,10 +201,10 @@
             <div class="settings-body">
                 <div class="settings-section">
                     <h3>❖ 外观主题</h3>
-                    <p class="settings-tip">选择你喜欢的色彩风格，自动保存</p>
+                    <p class="settings-tip">选择你喜欢的色彩风格，自动保存噢(づ′▽`)づ</p>
                     <div class="input-group">
                         <select id="theme-selector" class="hand-drawn-select" onchange="changeTheme(this.value)">
-                            <option value="default">紫点便笺 (默认)</option>
+                            <option value="default">紫点便笺</option>
                             <option value="subi">素笔闲抄</option>
                             <option value="tingyu">檐下听雨</option>
                             <option value="baiyu">白隅清章</option>
@@ -185,6 +215,8 @@
                 <div class="settings-section">
                     <h3>❖ GitHub 云端同步</h3>
                     <p class="settings-tip">填写 Token 即可直接与 GitHub 仓库同步数据</p>
+                    <p class="settings-tip" id="last-backup-time" style="color: var(--main-purple); font-weight: bold; margin-bottom: 15px;">云端最新备份：暂未测试 (点击下方按钮读取)</p>
+                    
                     <div class="input-group">
                         <label>GitHub Token (须勾选 repo 权限)</label>
                         <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
@@ -201,7 +233,8 @@
                         <label>文件名 (File Path)</label>
                         <input type="text" id="gh-path" value="xucenhe_backup.json">
                     </div>
-                    <div class="settings-actions">
+                    <div class="settings-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button type="button" id="test-gh-btn" onclick="testGithubConnection()" class="macaron-btn btn-green" style="grid-column: span 2;">⟳ 测试连接与读取时间</button>
                         <button type="button" onclick="syncToGithub()" class="macaron-btn btn-blue">↑ 备份到云端</button>
                         <button type="button" onclick="syncFromGithub()" class="macaron-btn btn-yellow">↓ 从云端恢复</button>
                     </div>

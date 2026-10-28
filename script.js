@@ -19,6 +19,7 @@ function escapeJsStr(str) {
 }
 
 let currentDetailIndex = -1;
+let isEditingDetail = false;
 let currentCategory = '全部';
 let isBatchMode = false;
 let selectedApis = [];
@@ -135,10 +136,12 @@ function renderAPIs() {
         const deleteBtnHtml = isBatchMode ? '' : `<button class="delete-btn" onclick="deleteAPI(event, ${realIndex})" title="擦除记录">✖</button>`;
         let tagsHtml = (api.categories || []).map(c => `<span class="card-category-tag">${escapeHtml(c)}</span>`).join(' ');
 
+        const websiteIcon = api.website ? `<a href="${escapeJsStr(api.website)}" target="_blank" class="website-icon" title="前往官网" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>` : '';
+
         card.innerHTML = `
             <div class="tape ${tapeClass}"></div>
             ${deleteBtnHtml}
-            <h3>${escapeHtml(api.name)} <br> ${tagsHtml}</h3>
+            <h3>${escapeHtml(api.name)}${websiteIcon}<br>${tagsHtml}</h3>
             <div class="card-buttons">
                 <button class="macaron-btn ${api.url ? 'btn-blue' : 'btn-disabled'}" onclick="copyText(event, '${escapeJsStr(api.url)}')">链接</button>
                 <button class="macaron-btn ${api.key ? 'btn-yellow' : 'btn-disabled'}" onclick="copyText(event, '${escapeJsStr(api.key)}')">密钥</button>
@@ -217,7 +220,7 @@ window.toggleBatchMode = function() {
 };
 
 window.moveUp = function() {
-    if (selectedApis.length !== 1) return alert("请仅选中 1 个卡片进行移动喔！");
+    if (selectedApis.length !== 1) return alert("请仅选中 1 个卡片进行移动呀！");
     const globalIdx = selectedApis[0];
     const currentFiltered = getFilteredList();
     const visibleIdx = currentFiltered.findIndex(api => api === apiList[globalIdx]);
@@ -247,7 +250,7 @@ window.moveDown = function() {
 window.batchMove = function() {
     const activeEls = document.querySelectorAll('#batch-category-list .active');
     const targetCats = Array.from(activeEls).map(el => el.innerText);
-    if (targetCats.length === 0) return alert("请在上面点击选择至少一个分类标签喔！");
+    if (targetCats.length === 0) return alert("请在上面点击选择至少一个分类标签喔宝宝~");
     selectedApis.forEach(globalIdx => {
         if (apiList[globalIdx]) {
             apiList[globalIdx].categories = Array.from(new Set([...(apiList[globalIdx].categories || []), ...targetCats]));
@@ -260,7 +263,7 @@ window.batchMove = function() {
 
 window.batchDelete = function() {
     if (selectedApis.length === 0) return alert("请先选中要删除的卡片喔！");
-    if (confirm(`确定要一口气删掉这 ${selectedApis.length} 个站子吗？ ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა`)) {
+    if (confirm(`确定要一口气删掉这 ${selectedApis.length} 个站子吗？ /ᐠ꧞˃ 𛱊 ˂マ`)) {
         selectedApis.sort((a, b) => b - a).forEach(index => apiList.splice(index, 1));
         saveAllData();
         toggleBatchMode();
@@ -272,10 +275,32 @@ window.openDetail = function(index) {
     if (!apiList[index]) return;
     currentDetailIndex = index;
     const api = apiList[index];
+
+    // 每次打开弹窗，强制重置为非编辑状态
+    isEditingDetail = false;
+    const editBtn = document.getElementById('close-detail-btn');
+    if (editBtn) {
+        editBtn.innerText = '✎';
+        editBtn.title = '修改信息';
+    }
+    
+    // 隐藏输入框，显示纯文本
+    document.querySelectorAll('.detail-display').forEach(el => el.classList.remove('d-none'));
+    document.querySelectorAll('.detail-input').forEach(el => el.classList.add('d-none'));
+
+    // 渲染纯文本数据
     document.getElementById('detail-name').innerText = api.name || "";
-    document.getElementById('detail-url').innerText = api.url || "";
+    const urls = getApiUrls(api);
+    renderUrlCapsules(urls, api.activeUrlIndex || 0);
     document.getElementById('detail-key').innerText = api.key || "无";
     document.getElementById('detail-share').innerText = api.share || "无";
+    
+    const webEl = document.getElementById('detail-website');
+    if (webEl) webEl.innerText = api.website || "无";
+
+    const catEl = document.getElementById('detail-categories');
+    if (catEl) catEl.innerText = (api.categories || []).join(', ') || "无";
+
     document.getElementById('page-1').classList.remove('d-none');
     document.getElementById('page-2').classList.add('d-none');
     renderModels();
@@ -283,26 +308,134 @@ window.openDetail = function(index) {
     document.body.style.overflow = 'hidden';
 };
 
+// 解析 API 中的所有 URL（兼容旧数据与多行数据）
+function getApiUrls(api) {
+    if (Array.isArray(api.urls) && api.urls.length > 0) return api.urls;
+    if (typeof api.url === 'string' && api.url.trim() !== '') {
+        return api.url.split('\n').map(u => u.trim()).filter(Boolean);
+    }
+    return [];
+}
+
+// 渲染 URL 胶囊切换器
+window.renderUrlCapsules = function(urls, activeIndex = 0) {
+    const bar = document.getElementById('url-capsule-bar');
+    const urlText = document.getElementById('detail-url');
+    if (!bar || !urlText) return;
+
+    if (urls.length === 0) {
+        bar.innerHTML = '';
+        urlText.innerText = '无';
+        return;
+    }
+
+    const safeIndex = (activeIndex >= 0 && activeIndex < urls.length) ? activeIndex : 0;
+    urlText.innerText = urls[safeIndex];
+
+    // 如果只有 1 个网址，自动隐藏胶囊栏，保持极简
+    if (urls.length <= 1) {
+        bar.innerHTML = '';
+        return;
+    }
+
+    // 超过 1 个网址时，生成 [主] [1] [2] ...
+    bar.innerHTML = urls.map((u, idx) => {
+        const label = idx === 0 ? '主' : idx;
+        const activeClass = idx === safeIndex ? 'active' : '';
+        return `<span class="url-capsule ${activeClass}" onclick="switchDetailUrl(event, ${idx})" title="切换线路">${label}</span>`;
+    }).join('');
+};
+
+// 点击胶囊切换显示的网址（同时将该线路设为默认复制线路）
+window.switchDetailUrl = function(e, idx) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const api = apiList[currentDetailIndex];
+    if (!api) return;
+    const urls = getApiUrls(api);
+    api.activeUrlIndex = idx; // 记住你最后选中的线路
+    api.url = urls[idx] || urls[0] || ""; // 让主页外面的「链接」按钮也同步复制这条线路！
+    saveAllData();
+    renderUrlCapsules(urls, idx);
+    renderAPIs();
+};
+
 window.editApiInfo = function() {
     if (currentDetailIndex === -1 || !apiList[currentDetailIndex]) return;
     const api = apiList[currentDetailIndex];
-    const newName = prompt("修改 API 名称：", api.name);
-    if (newName === null) return;
-    api.url = prompt("修改 URL：", api.url) ?? api.url;
-    api.key = prompt("修改 KEY (可为空)：", api.key || "") ?? api.key;
-    api.share = prompt("修改 邀人链接 (可为空)：", api.share || "") ?? api.share;
-    
-    const newCatsInput = prompt("修改分类 (多个请用逗号隔开)：", (api.categories || []).join(', '));
-    if (newCatsInput !== null) {
-        const newCatsArray = newCatsInput.split(/[,，]/).map(c => c.trim()).filter(c => c !== '');
-        api.categories = newCatsArray;
-        newCatsArray.forEach(cat => { if (!categoryList.includes(cat) && cat !== '全部' && cat !== '未分类') categoryList.push(cat); });
+    const editBtn = document.getElementById('close-detail-btn');
+
+    if (!isEditingDetail) {
+        // 【进入编辑模式】
+        isEditingDetail = true;
+        editBtn.innerText = '✓'; 
+        editBtn.title = '保存修改';
+
+        document.getElementById('edit-name').value = api.name || "";
+        document.getElementById('edit-url').value = getApiUrls(api).join('\n');
+        document.getElementById('edit-key').value = api.key || "";
+        document.getElementById('edit-share').value = api.share || "";
+        
+        const editWebEl = document.getElementById('edit-website');
+        if (editWebEl) editWebEl.value = api.website || "";
+
+        // 🌟 新增：动态渲染已有的分类供点击选择 🌟
+        const editCatContainer = document.getElementById('edit-category-list');
+        if (editCatContainer) {
+            editCatContainer.innerHTML = '';
+            categoryList.forEach(cat => {
+                const span = document.createElement('span');
+                span.className = 'multi-cat-tag';
+                // 如果当前 API 已经有这个分类，就设置为选中状态
+                if ((api.categories || []).includes(cat)) span.classList.add('active');
+                span.innerText = cat;
+                span.onclick = () => span.classList.toggle('active');
+                editCatContainer.appendChild(span);
+            });
+        }
+
+        // 隐藏纯文本，显示输入框
+        document.querySelectorAll('.detail-display').forEach(el => el.classList.add('d-none'));
+        document.querySelectorAll('.detail-input').forEach(el => el.classList.remove('d-none'));
+        if(editCatContainer) editCatContainer.classList.remove('d-none');
+        
+    } else {
+        // 【保存修改数据】
+        const newName = document.getElementById('edit-name').value.trim();
+        if (!newName) return alert("API 名称不能为空喔宝宝 来起个名字吧！");
+
+        api.name = newName;
+        const rawUrls = document.getElementById('edit-url').value.split('\n').map(u => u.trim()).filter(Boolean);
+        api.urls = rawUrls;
+        api.activeUrlIndex = 0;
+        api.url = rawUrls[0] || "";
+        api.key = document.getElementById('edit-key').value.trim();
+        api.share = document.getElementById('edit-share').value.trim();
+        
+        const editWebEl = document.getElementById('edit-website');
+        if (editWebEl) api.website = editWebEl.value.trim();
+
+        // 🌟 新增：读取点击选中的分类标签 🌟
+        const editCatContainer = document.getElementById('edit-category-list');
+        if (editCatContainer) {
+            const activeEls = editCatContainer.querySelectorAll('.active');
+            api.categories = Array.from(activeEls).map(el => el.innerText);
+        }
+
+        saveAllData();
+        
+        // 退出编辑模式
+        isEditingDetail = false;
+        editBtn.innerText = '✎';
+        editBtn.title = '修改信息';
+        
+        document.querySelectorAll('.detail-display').forEach(el => el.classList.remove('d-none'));
+        document.querySelectorAll('.detail-input').forEach(el => el.classList.add('d-none'));
+        if(editCatContainer) editCatContainer.classList.add('d-none');
+        
+        openDetail(currentDetailIndex); // 重新加载纯文本视觉，没有分类时底层 openDetail 原本的逻辑已经会自动设为 "无"
+        renderCategories();
+        renderAPIs();
     }
-    if (newName.trim() !== '') api.name = newName.trim();
-    saveAllData();
-    openDetail(currentDetailIndex);
-    renderCategories();
-    renderAPIs();
 };
 
 window.flipPage = function(targetPage) {
@@ -323,7 +456,7 @@ window.addModel = function() {
 };
 
 window.deleteModel = function(modelIndex) {
-    if (confirm("确定删除吗？ ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა")) {
+    if (confirm("确定删除吗？ ╭( ; ๐ ᎑ ๐)╮")) {
         apiList[currentDetailIndex].models.splice(modelIndex, 1);
         saveAllData();
         renderModels();
@@ -353,13 +486,13 @@ function fallbackCopy(text, callback) {
     ta.style.opacity = '0';
     document.body.appendChild(ta);
     ta.select();
-    try { document.execCommand('copy'); if(callback) callback(); } catch (err) { alert("复制失败，请手动复制"); }
+    try { document.execCommand('copy'); if(callback) callback(); } catch (err) { alert("复制失败，要手动复制啦<(￣3￣)>"); }
     document.body.removeChild(ta);
 }
 
 window.deleteAPI = function(e, index) {
     if (e && e.stopPropagation) e.stopPropagation();
-    if (confirm("确定要擦除记录吗？ ૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა")) {
+    if (confirm("确定要擦除记录吗？ o((⊙﹏⊙))o")) {
         apiList.splice(index, 1);
         saveAllData();
         renderCategories();
@@ -467,15 +600,55 @@ window.syncFromGithub = async function() {
             if (confirm("读取成功！要覆盖本地数据吗？（原有数据将被替换）")) {
                 localStorage.setItem('softboxCategoryStore', JSON.stringify(parsedData.categories));
                 localStorage.setItem('softboxApiStore', JSON.stringify(parsedData.apis));
-                alert("云端数据恢复成功啦！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
+                alert("云端数据恢复成功啦！(˵>ㅿ<˵)♡");
                 location.reload(); 
             }
         } else {
-            alert("云端的数据格式不匹配喔~");
+            alert("云端的数据格式不匹配诶宝宝^_ ̫ _ ̥`");
         }
     } catch (err) {
         console.error(err);
-        alert("解析失败，请确认文件内容");
+        alert("解析失败，请确认文件内容˃ ˄ ˂");
+    }
+};
+
+window.testGithubConnection = async function() {
+    const token = document.getElementById('gh-token').value.trim();
+    const user = document.getElementById('gh-username').value.trim();
+    const repo = document.getElementById('gh-repo').value.trim();
+    const path = document.getElementById('gh-path').value.trim();
+
+    if (!token || !user || !repo || !path) return alert("请先填写完整的 GitHub 配置信息喔！");
+
+    const btn = document.getElementById('test-gh-btn');
+    const originalText = btn.innerText;
+    btn.innerText = "正在测试与读取...";
+
+    // 巧用 GitHub Commits API，直接查这个备份文件最后一次被修改的时间
+    const url = `https://api.github.com/repos/${user}/${repo}/commits?path=${path}&per_page=1`;
+    const headers = { "Authorization": `token ${token}`, "Accept": "application/vnd.github.v3+json" };
+
+    try {
+        const res = await fetch(url, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.length > 0) {
+                // 解析云端最后提交的时间
+                const commitDate = new Date(data[0].commit.committer.date).toLocaleString();
+                document.getElementById('last-backup-time').innerText = `云端最新备份：${commitDate}`;
+                alert(`连接成功啦！=ᗜωᗜ= \n并且读取到最近的备份时间为：\n${commitDate}`);
+            } else {
+                document.getElementById('last-backup-time').innerText = `云端暂无该文件的备份记录`;
+                alert("连接成功！仓库可正常访问，但还没有备份记录噢՞⸝⸝'ᜊ'⸝⸝՞");
+            }
+        } else {
+            const errData = await res.json();
+            alert(`连接失败: ${errData.message}`);
+        }
+    } catch (err) {
+        alert("网络错误，无法连接到 GitHub API ˃ ˄ ˂");
+    } finally {
+        btn.innerText = originalText;
     }
 };
 
@@ -506,13 +679,13 @@ window.importData = function(event) {
             if (data.categories && data.apis) {
                 localStorage.setItem('softboxCategoryStore', JSON.stringify(data.categories));
                 localStorage.setItem('softboxApiStore', JSON.stringify(data.apis));
-                alert("恢复成功啦！૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა");
+                alert("恢复成功啦！(*･x･)/ﾟ･:*:･｡");
                 location.reload(); 
             } else {
-                alert("文件格式不对喔~");
+                alert("文件格式不对喔宝宝ㅠ⩊ㅠ");
             }
         } catch (err) {
-            alert("读取失败了~");
+            alert("读取失败了߹꒳߹");
         }
     };
     reader.readAsText(file);
@@ -550,11 +723,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('api-form').addEventListener('submit', (e) => {
         e.preventDefault();
         const activeEls = document.querySelectorAll('#api-category-list .active');
+        // 👇 新增：按行解析多个 URL 👇
+        const rawUrls = document.getElementById('api-url').value.split('\n').map(u => u.trim()).filter(Boolean);
+        
         apiList.push({
             name: document.getElementById('api-name').value.trim(),
-            url: document.getElementById('api-url').value.trim(),
+            url: rawUrls[0] || "", // 主线
+            urls: rawUrls,         // 包含所有备用的数组
+            activeUrlIndex: 0,
             key: document.getElementById('api-key').value.trim(),
             share: document.getElementById('api-share').value.trim(),
+            website: document.getElementById('api-website') ? document.getElementById('api-website').value.trim() : "",
             categories: Array.from(activeEls).map(el => el.innerText),
             models: []
         });
